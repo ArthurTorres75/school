@@ -2,10 +2,10 @@ import {
   WinstonModule,
   utilities as nestWinstonModuleUtilities,
 } from 'nest-winston';
-import winston, { format, transports } from 'winston';
+import { format, transports } from 'winston';
 
-export const winstonLogger = () => {
-  const instance = [
+const logger = WinstonModule.createLogger({
+  transports: [
     new transports.Console({
       level: 'info',
       format: format.combine(
@@ -17,11 +17,7 @@ export const winstonLogger = () => {
       ),
     }),
     new transports.File({ filename: 'combined.log' }),
-  ];
+  ],
+});
 
-  const logger = WinstonModule.createLogger({
-    transports: instance,
-  });
-
-  return logger;
-};
+export default logger;

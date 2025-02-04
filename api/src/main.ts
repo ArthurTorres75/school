@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { winstonLogger } from './helpers/logger';
+import logger from './helpers/logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
-    logger: winstonLogger(),
+    logger,
   });
   await app.listen(process.env.PORT || 5000);
 }
