@@ -47,10 +47,20 @@ enum Day {
 }
 
 model Module {
+  id          Int                   @id @default(autoincrement())
+  name        String
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  permissions RolModulePermission[]
+}
+
+model RolModulePermission {
   id        Int      @id @default(autoincrement())
-  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  moduleId  Int
+  module    Module   @relation(fields: [moduleId], references: [id])
+  role      Role
 }
 
 model Student {
