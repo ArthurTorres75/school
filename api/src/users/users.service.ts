@@ -68,12 +68,47 @@ export class UsersService {
     try {
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
       if (!user) {
-        throw new Error('User not found');
+        throw new NotFoundException('User not found');
       }
       const isPasswordValid = await bcrypt.compare(newPassword, user.password);
       return isPasswordValid;
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  async updateUser(
+    userId: number,
+    username: string,
+    email: string,
+  ): Promise<{ message: string; user: User }> {
+    try {
+      const updatedUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: { username, email },
+      });
+      return {
+        message: 'User updated successfully',
+        user: updatedUser,
+      };
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async deleteUser(userId: number): Promise<{ message: string }> {
+    try {
+      const userDeleted = await this.prisma.user.delete({
+        where: { id: userId },
+      });
+      if (!userDeleted) {
+        throw new NotFoundException('User not found');
+      }
+      return {
+        message: 'User deleted successfully',
+      };
+    } catch (error) {
+      handleError(error);
     }
   }
 }

@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Post,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signIn.dto';
@@ -26,5 +27,15 @@ export class AuthController {
   @Post('signup')
   async signUp(@Body() createUserDto: CreateUserDto) {
     return await this.authService.signUp(createUserDto);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: { email: string }) {
+    return this.authService.forgotPassword(body.email);
+  }
+
+  @Post('logout')
+  async logOut() {
+    return this.authService.logOut();
   }
 }
