@@ -8,11 +8,7 @@ async function bootstrap() {
     cors: true,
     logger,
   });
-  // app.enableCors({
-  //   origin: 'http://localhost:5000', // Cambia esto a la URL de tu aplicación Next.js
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  //   credentials: true,
-  // });
+
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.listen(process.env.PORT || 5000);
 }

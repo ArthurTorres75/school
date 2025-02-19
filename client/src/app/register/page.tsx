@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthService } from "@/utils/auth";
 import { Role } from "@/interfaces/auth.interface";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import { AxiosErrorResponseData } from "@/interfaces/axios.interface";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -16,18 +19,19 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("register form: ", email, password, role);
     setIsLoading(true);
     await AuthService.signUp({ email, password, role })
       .then((response) => {
-        console.log("Successfully registered:", response);
         router.push("/login");
         setEmail("");
         setPassword("");
         setRole(Role.STUDENT);
+        toast.success("Registration successful!");
       })
-      .catch((error) => {
-        console.error("Failed to register:", error);
+      .catch((error: AxiosError<AxiosErrorResponseData>) => {
+        toast.error(`Failed reason: ${error.response?.data?.message}`, {
+          theme: "colored",
+        });
       })
       .finally(() => {
         setIsLoading(false);

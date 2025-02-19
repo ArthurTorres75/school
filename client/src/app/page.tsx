@@ -22,7 +22,7 @@ export default function Home() {
         <h1 className="text-6xl font-extrabold">School</h1>
       </main>
       <footer className="w-full text-center p-4">
-        {/* <p>&copy; 2025 A&A School. All rights reserved.</p> */}
+        <p>&copy; 2025 A&A School. All rights reserved.</p>
       </footer>
     </div>
   );
