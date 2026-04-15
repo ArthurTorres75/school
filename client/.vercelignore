@@ -1,0 +1,9 @@
+.git
+.github
+.atl
+node_modules
+.next
+coverage
+README.md
+*.log
+*.local
