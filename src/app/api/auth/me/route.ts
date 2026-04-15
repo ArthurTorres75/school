@@ -4,6 +4,10 @@ import { AUTH_ERROR_CODE, AUTH_MESSAGE } from "@/modules/users/user.constants";
 import { resolveSessionFromRequest } from "@/modules/users/auth-session";
 import type { ApiErrorBody, ApiSuccessBody, AuthSession } from "@/modules/users/user.types";
 
+interface MeSuccessBody extends ApiSuccessBody<AuthSession> {
+  success: true;
+}
+
 export async function GET(request: Request): Promise<NextResponse<ApiSuccessBody<AuthSession> | ApiErrorBody>> {
   const session = await resolveSessionFromRequest(request);
 
@@ -18,12 +22,11 @@ export async function GET(request: Request): Promise<NextResponse<ApiSuccessBody
     );
   }
 
-  return NextResponse.json(
-    {
-      success: true,
-      message: AUTH_MESSAGE.LOGIN_SUCCESS,
-      data: session,
-    },
-    { status: 200 },
-  );
+  const responseBody: MeSuccessBody = {
+    success: true,
+    message: AUTH_MESSAGE.LOGIN_SUCCESS,
+    data: session,
+  };
+
+  return NextResponse.json(responseBody, { status: 200 });
 }
