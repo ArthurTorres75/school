@@ -1,4 +1,5 @@
 import { PreferencesPage } from "@/components/PreferencesPage";
-export default function Page() {
+
+export default function LanguagePreferencesPage() {
   return <PreferencesPage />;
 }

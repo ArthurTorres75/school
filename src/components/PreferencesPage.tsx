@@ -1,28 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useLanguage } from "@/providers/LanguageProvider";
-import { Button } from "@/components/ui/button";
+import { useTheme } from "@/providers/ThemeProvider";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { cn } from "@/lib/utils";
-import { LANGUAGE, THEME_STORAGE_KEY, type Language } from "@/lib/i18n";
-
-const THEME = {
-  LIGHT: "light",
-  DARK: "dark",
-} as const;
-
-type Theme = (typeof THEME)[keyof typeof THEME];
+import { THEME } from "@/lib/i18n";
 
 const copy = {
   es: {
     title: "Preferencias de la app",
-    subtitle: "Elegi idioma y tema visual para tu experiencia.",
-    languageTitle: "Idioma",
-    themeTitle: "Tema",
-    spanish: "Español",
-    english: "Inglés",
-    light: "Claro",
-    dark: "Oscuro",
+    subtitle: "Elegí idioma y tema visual para tu experiencia.",
     previewTitle: "Vista previa",
     previewText:
       "Tu configuración queda guardada en este navegador para las próximas visitas.",
@@ -30,48 +18,17 @@ const copy = {
   en: {
     title: "App preferences",
     subtitle: "Pick language and visual theme for your experience.",
-    languageTitle: "Language",
-    themeTitle: "Theme",
-    spanish: "Spanish",
-    english: "English",
-    light: "Light",
-    dark: "Dark",
     previewTitle: "Preview",
     previewText:
       "Your selection is saved in this browser for your next visits.",
   },
 } as const;
 
-function isTheme(value: string | null): value is Theme {
-  return value === THEME.LIGHT || value === THEME.DARK;
-}
-
 export function PreferencesPage() {
-  const { language: currentLanguage, setLanguage } = useLanguage();
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") {
-      return THEME.LIGHT;
-    }
+  const { language } = useLanguage();
+  const { theme } = useTheme();
 
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-    if (isTheme(savedTheme)) {
-      return savedTheme;
-    }
-
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    return prefersDark ? THEME.DARK : THEME.LIGHT;
-  });
-
-  useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
-    document.documentElement.classList.toggle("dark", theme === THEME.DARK);
-  }, [theme]);
-
-  const handleLanguageChange = (newLanguage: Language) => {
-    setLanguage(newLanguage);
-  };
-
-  const t = copy[currentLanguage];
+  const t = copy[language];
 
   return (
     <main className="min-h-screen bg-linear-to-b from-background via-muted/40 to-background px-5 py-10 text-foreground sm:px-8 sm:py-16">
@@ -83,43 +40,11 @@ export function PreferencesPage() {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <article className="rounded-2xl border border-border bg-background/80 p-4">
-            <h2 className="mb-3 text-sm font-medium text-muted-foreground">{t.languageTitle}</h2>
-            <div className="flex gap-2">
-              <Button
-                className="flex-1"
-                variant={currentLanguage === LANGUAGE.ES ? "default" : "outline"}
-                onClick={() => handleLanguageChange(LANGUAGE.ES)}
-              >
-                {t.spanish}
-              </Button>
-              <Button
-                className="flex-1"
-                variant={currentLanguage === LANGUAGE.EN ? "default" : "outline"}
-                onClick={() => handleLanguageChange(LANGUAGE.EN)}
-              >
-                {t.english}
-              </Button>
-            </div>
+            <LanguageSwitcher />
           </article>
 
           <article className="rounded-2xl border border-border bg-background/80 p-4">
-            <h2 className="mb-3 text-sm font-medium text-muted-foreground">{t.themeTitle}</h2>
-            <div className="flex gap-2">
-              <Button
-                className="flex-1"
-                variant={theme === THEME.LIGHT ? "default" : "outline"}
-                onClick={() => setTheme(THEME.LIGHT)}
-              >
-                {t.light}
-              </Button>
-              <Button
-                className="flex-1"
-                variant={theme === THEME.DARK ? "default" : "outline"}
-                onClick={() => setTheme(THEME.DARK)}
-              >
-                {t.dark}
-              </Button>
-            </div>
+            <ThemeSwitcher />
           </article>
         </div>
 

@@ -1,6 +1,6 @@
 # Skill Registry
 
-Generated: 2026-04-13
+Generated: 2026-04-14
 Project: school
 Persistence mode: engram
 
@@ -8,7 +8,8 @@ Persistence mode: engram
 
 | Source | Path | Scope | Notes |
 |------|------|------|------|
-| Workspace instructions | .github/copilot-instructions.md | project | Next.js App Router, strict TypeScript, Tailwind v4, minimal focused changes |
+| Workspace instructions | .github/copilot-instructions.md | project | Next.js App Router, strict TypeScript, Tailwind v4, modular services + repositories |
+| Project specs | .github/project-specs.md | project | Product roles/pages and dashboard scope |
 
 ## Available Skills
 
@@ -25,6 +26,9 @@ Persistence mode: engram
 | branch-pr | user | Creating or preparing a pull request | ~/.claude/skills/branch-pr/SKILL.md |
 | issue-creation | user | Creating or triaging a GitHub issue | ~/.claude/skills/issue-creation/SKILL.md |
 | judgment-day | user | Dual adversarial review requests | ~/.claude/skills/judgment-day/SKILL.md |
+| go-testing | user | Go testing patterns and Bubbletea TUI testing | ~/.claude/skills/go-testing/SKILL.md |
+| skill-creator | user | Creating new reusable agent skills | ~/.claude/skills/skill-creator/SKILL.md |
+| agent-customization | user | Configure/debug VS Code agent customization files | ~/.vscode/extensions/github.copilot-chat-0.43.0/assets/prompts/skills/agent-customization/SKILL.md |
 
 ## Compact Rules
 

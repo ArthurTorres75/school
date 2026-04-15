@@ -115,18 +115,38 @@
 ```
 src/
 ├── app/
+│   ├── (public)/
+│   ├── (auth)/
+│   ├── dashboard/
 │   ├── api/
-│   └── (routes)/
+│   └── actions/
 ├── components/
-├── modules/
-│   └── example/
-│       ├── example.service.ts
-│       ├── example.repository.ts
-│       ├── example.schema.ts
-│       └── route.ts
-├── hooks/
+│   ├── ui/
+│   ├── shared/
+│   └── sections/
 ├── lib/
-└── types/
+│   ├── prisma.ts
+│   ├── auth.ts
+│   ├── validations/
+│   └── utils.ts
+├── services/
+├── hooks/
+├── types/
+├── modules/
+│   ├── auth/
+│   │   ├── auth.service.ts
+│   │   ├── auth.repository.ts
+│   │   ├── auth.schema.ts
+│   │   └── auth.types.ts
+│   ├── students/
+│   │   ├── student.service.ts
+│   │   ├── student.repository.ts
+│   │   ├── student.schema.ts
+│   │   └── student.types.ts
+│   ├── courses/
+│   ├── grades/
+│   ├── news/
+│   └── billing/
 ```
 
 ---

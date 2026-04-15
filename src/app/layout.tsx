@@ -4,6 +4,9 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeScript } from "./ThemeScript";
 import { DEFAULT_LANGUAGE } from "@/lib/i18n";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+
+import { QueryClientProvider } from "@/providers/QueryClientProvider";
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
 
@@ -37,9 +40,12 @@ export default function RootLayout({
         <ThemeScript />
       </head>
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>
+          <QueryClientProvider>{children}</QueryClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
