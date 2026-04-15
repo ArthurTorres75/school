@@ -128,6 +128,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
     router.refresh();
   };
 

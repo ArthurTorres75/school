@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
@@ -11,8 +12,26 @@ import { cn } from "@/lib/utils";
 
 export function PrivateDashboardHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const { language } = useLanguage();
   const copy = SITE_COPY[language];
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (isLoggingOut) {
+      return;
+    }
+
+    setIsLoggingOut(true);
+
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      router.push("/");
+      router.refresh();
+      setIsLoggingOut(false);
+    }
+  };
 
   const navigationItems = [
     { href: "/dashboard", label: copy.privateNav.dashboard },
@@ -33,15 +52,15 @@ export function PrivateDashboardHeader() {
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeSwitcher />
-          <form action="/api/auth/logout" method="post">
-            <button
-              type="submit"
-              className="inline-flex h-8 items-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              aria-label={copy.privateNav.logout}
-            >
-              {copy.privateNav.logout}
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="inline-flex h-8 items-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-70"
+            aria-label={copy.privateNav.logout}
+          >
+            {copy.privateNav.logout}
+          </button>
         </div>
       </div>
 
