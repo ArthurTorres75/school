@@ -16,7 +16,7 @@ export function PublicPageIntro({
   tone = "primary",
 }: PublicPageIntroProps) {
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-col gap-6 rounded-3xl border border-primary/15 bg-card/95 p-6 shadow-xl shadow-primary/10 sm:p-8">
+    <section className="mx-auto flex w-full max-w-4xl flex-col gap-6 rounded-3xl border border-primary/15 bg-card/95 p-6 shadow-xl shadow-primary/10 sm:p-8 md:p-10">
       <div className="space-y-3">
         <p
           className={cn(
@@ -28,7 +28,7 @@ export function PublicPageIntro({
         >
           {eyebrow}
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">{title}</h1>
         <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">{subtitle}</p>
       </div>
 

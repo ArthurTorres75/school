@@ -210,6 +210,7 @@ When working on this project, load and follow these skills:
 * Data fetching → read ~/.copilot/skills/tanstack-query/SKILL.md
 * Testing → read ~/.copilot/skills/vitest-testing/SKILL.md
 * shadcn/ui components → read ~/.copilot/skills/shadcn/SKILL.md
+* Technical design (SDD) → read ~/.copilot/skills/sdd-design/SKILL.md
 
 ---
 

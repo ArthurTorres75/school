@@ -1,19 +1,28 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { DEFAULT_LANGUAGE } from "@/lib/i18n";
 import { SITE_COPY } from "@/lib/site-copy";
 
+export const metadata: Metadata = {
+  title: {
+    absolute: "School — Plataforma de Gestión Escolar",
+  },
+  description:
+    "Plataforma web institucional para escuelas primarias. Inscripciones, cursos, noticias y sistema de gestión académica para alumnos, padres y docentes.",
+};
+
 export default function RootPage() {
   const copy = SITE_COPY[DEFAULT_LANGUAGE].landing;
 
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-col gap-8 rounded-3xl border border-primary/15 bg-card/95 p-6 shadow-xl shadow-primary/10 sm:p-8">
+    <section className="mx-auto flex w-full max-w-4xl flex-col gap-8 rounded-3xl border border-primary/15 bg-card/95 p-6 shadow-xl shadow-primary/10 sm:p-8 md:p-10">
       <header className="space-y-3">
         <p className="inline-flex w-fit rounded-full border border-accent/35 bg-accent/45 px-3 py-1 text-xs font-medium uppercase tracking-wide text-accent-foreground">
           {copy.badge}
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{copy.title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">{copy.title}</h1>
         <p className="text-sm text-muted-foreground sm:text-base">{copy.subtitle}</p>
       </header>
 

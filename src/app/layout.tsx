@@ -21,8 +21,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "School",
-  description: "Language and theme preferences management",
+  title: {
+    template: "%s | School",
+    default: "School — Plataforma de Gestión Escolar",
+  },
+  description:
+    "Plataforma web institucional para escuelas primarias. Información de cursos, inscripciones, noticias y acceso privado para alumnos, padres y docentes.",
+  openGraph: {
+    type: "website",
+    siteName: "School",
+    locale: "es_AR",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
