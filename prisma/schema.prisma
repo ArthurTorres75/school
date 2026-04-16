@@ -14,14 +14,208 @@ enum UserRole {
   student
 }
 
+enum EnrollmentStatus {
+  active
+  completed
+  dropped
+}
+
+enum GradeCategory {
+  exam
+  homework
+  project
+  final
+}
+
 model User {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  fullName     String
-  email        String   @unique
-  role         UserRole
-  passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName       String
+  email          String   @unique
+  role           UserRole
+  passwordHash   String
+  isActive       Boolean  @default(true)
+  phoneNumber    String?
+  imageUrl       String?
+  organizationId String?  @db.ObjectId
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  lastLoginAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  studentProfile Student? @relation("UserStudent")
+  teacherProfile Teacher? @relation("UserTeacher")
+  parentProfile  Parent?  @relation("UserParent")
+
+  authoredNews News[]  @relation("NewsAuthor")
+  gradedItems  Grade[] @relation("GradeGradedBy")
 
   @@index([role])
+  @@index([organizationId])
+}
+
+model Student {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique @db.ObjectId
+  user           User     @relation("UserStudent", fields: [userId], references: [id])
+  isActive       Boolean  @default(true)
+  organizationId String   @db.ObjectId
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  enrollments Enrollment[]
+  grades      Grade[]
+  parents     ParentStudent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+model Teacher {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique @db.ObjectId
+  user           User     @relation("UserTeacher", fields: [userId], references: [id])
+  organizationId String?  @db.ObjectId
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  courses Course[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+model Parent {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique @db.ObjectId
+  user           User     @relation("UserParent", fields: [userId], references: [id])
+  organizationId String?  @db.ObjectId
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  children ParentStudent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+model ParentStudent {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  studentId String  @db.ObjectId
+  parentId  String  @db.ObjectId
+  student   Student @relation(fields: [studentId], references: [id])
+  parent    Parent  @relation(fields: [parentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, parentId])
+  @@index([studentId])
+  @@index([parentId])
+}
+
+model Course {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  description    String?
+  code           String?
+  isActive       Boolean  @default(true)
+  teacherId      String?  @db.ObjectId
+  teacher        Teacher? @relation(fields: [teacherId], references: [id])
+  organizationId String   @db.ObjectId
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  enrollments Enrollment[]
+  grades      Grade[]
+  news        News[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teacherId])
+  @@index([organizationId])
+  @@index([organizationId, code])
+}
+
+model Enrollment {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  studentId String           @db.ObjectId
+  courseId  String           @db.ObjectId
+  status    EnrollmentStatus @default(active)
+
+  student Student @relation(fields: [studentId], references: [id])
+  course  Course  @relation(fields: [courseId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, courseId])
+  @@index([courseId])
+}
+
+model Grade {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  studentId   String       @db.ObjectId
+  courseId    String       @db.ObjectId
+  gradedById  String       @db.ObjectId
+  category    GradeCategory
+  title       String
+  value       Float
+  maxScore    Float        @default(100)
+  weight      Float?
+  isCalculated Boolean     @default(false)
+  gradedAt    DateTime     @default(now())
+
+  student  Student @relation(fields: [studentId], references: [id])
+  course   Course  @relation(fields: [courseId], references: [id])
+  gradedBy User    @relation("GradeGradedBy", fields: [gradedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId, courseId])
+  @@index([gradedById])
+  @@index([category])
+}
+
+model News {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  slug           String   @unique
+  content        String
+  excerpt        String?
+  imageUrl       String?
+  published      Boolean  @default(false)
+  publishedAt    DateTime?
+  authorId       String   @db.ObjectId
+  author         User     @relation("NewsAuthor", fields: [authorId], references: [id])
+  courseId       String?  @db.ObjectId
+  course         Course?  @relation(fields: [courseId], references: [id])
+  organizationId String   @db.ObjectId
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([courseId])
+  @@index([organizationId])
+  @@index([published, createdAt])
+}
+
+model Organization {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  slug        String   @unique
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users    User[]
+  students Student[]
+  teachers Teacher[]
+  parents  Parent[]
+  courses  Course[]
+  news     News[]
 }

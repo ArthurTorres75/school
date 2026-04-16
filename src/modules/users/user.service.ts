@@ -23,6 +23,7 @@ export class UserService {
       fullName: input.fullName,
       email: input.email,
       role: input.role,
+      organizationSlug: input.organizationSlug,
     };
 
     const passwordHash = await hashPassword(input.password);

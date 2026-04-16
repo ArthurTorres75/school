@@ -12,6 +12,7 @@ export interface CreateUserInput {
   fullName: string;
   email: string;
   role: UserRole;
+  organizationSlug?: string;
 }
 
 export interface AuthSession {

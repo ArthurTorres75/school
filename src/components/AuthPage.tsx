@@ -10,7 +10,7 @@ import { useLanguage } from "@/providers/LanguageProvider";
 import { UI_COPY } from "@/lib/ui-copy";
 
 type AuthMode = "login" | "register";
-type UserRole = "student" | "teacher" | "parent" | "admin";
+type UserRole = "student" | "teacher" | "parent";
 
 interface LoginInput {
   email: string;
@@ -310,7 +310,6 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                     <option value="student">{copy.roleStudent}</option>
                     <option value="teacher">{copy.roleTeacher}</option>
                     <option value="parent">{copy.roleParent}</option>
-                    <option value="admin">{copy.roleAdmin}</option>
                   </select>
                 </div>
               )}

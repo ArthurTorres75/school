@@ -25,7 +25,10 @@ export const registerUserSchema = z.object({
   ),
   email: normalizedEmailSchema,
   password: passwordPolicySchema,
-  role: z.enum([USER_ROLE.ADMIN, USER_ROLE.TEACHER, USER_ROLE.PARENT, USER_ROLE.STUDENT]),
+  role: z.enum([USER_ROLE.TEACHER, USER_ROLE.PARENT, USER_ROLE.STUDENT]),
+  organizationSlug: z
+    .preprocess((value) => (typeof value === "string" ? value.trim().toLowerCase() : value), z.string().min(2).max(64))
+    .optional(),
 });
 
 export const loginSchema = z.object({

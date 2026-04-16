@@ -5,6 +5,17 @@ import { z } from "zod";
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DATABASE_URL: z.string().min(1, { error: "DATABASE_URL es obligatoria." }),
+  SYSTEM_ADMIN_EMAILS: z
+    .string()
+    .optional()
+    .transform((value) =>
+      value
+        ? value
+            .split(",")
+            .map((email) => email.trim().toLowerCase())
+            .filter((email) => email.length > 0)
+        : [],
+    ),
   JWT_SECRET: z
     .string()
     .min(32, { error: "JWT_SECRET debe tener al menos 32 caracteres." }),
@@ -24,6 +35,7 @@ const envSchema = z.object({
 const parsedEnv = envSchema.safeParse({
   NODE_ENV: process.env.NODE_ENV,
   DATABASE_URL: process.env.DATABASE_URL,
+  SYSTEM_ADMIN_EMAILS: process.env.SYSTEM_ADMIN_EMAILS,
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_ISSUER: process.env.JWT_ISSUER,
   JWT_AUDIENCE: process.env.JWT_AUDIENCE,
