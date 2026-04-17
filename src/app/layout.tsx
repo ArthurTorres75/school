@@ -50,6 +50,7 @@ export default function RootLayout({
     <html
       lang={DEFAULT_LANGUAGE}
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={cn("font-sans", figtree.variable)}
     >
       <head suppressHydrationWarning>

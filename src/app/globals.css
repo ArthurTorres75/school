@@ -129,6 +129,87 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply scroll-smooth font-sans;
+  }
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes orb-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(0, -14px, 0) scale(1.04);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@layer components {
+  .landing-panel {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .landing-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(circle at 10% 15%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 55%);
+  }
+
+  .landing-orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(50px);
+    opacity: 0.33;
+    animation: orb-drift 9s ease-in-out infinite;
+  }
+
+  .landing-orb-primary {
+    top: -110px;
+    right: -80px;
+    height: 260px;
+    width: 260px;
+    background-color: color-mix(in oklab, var(--primary) 40%, transparent);
+  }
+
+  .landing-orb-accent {
+    bottom: 70px;
+    left: -90px;
+    height: 220px;
+    width: 220px;
+    background-color: color-mix(in oklab, var(--accent) 40%, transparent);
+    animation-delay: 1.6s;
+  }
+
+  .landing-offer-card {
+    transition: transform 240ms ease, border-color 240ms ease, background-color 240ms ease;
+  }
+
+  .landing-offer-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
+    background-color: color-mix(in oklab, var(--card) 75%, var(--primary) 8%);
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 620ms ease-out both;
   }
 }

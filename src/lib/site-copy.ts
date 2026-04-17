@@ -15,6 +15,22 @@ interface PrivateNavigationCopy {
   logout: string;
 }
 
+interface LandingStatCopy {
+  value: string;
+  label: string;
+}
+
+interface LandingOfferCopy {
+  title: string;
+  description: string;
+  tag: string;
+}
+
+interface LandingFlowStepCopy {
+  title: string;
+  description: string;
+}
+
 interface LandingPageCopy {
   badge: string;
   title: string;
@@ -22,10 +38,20 @@ interface LandingPageCopy {
   primaryCta: string;
   secondaryCta: string;
   tertiaryCta: string;
-  publicSectionTitle: string;
-  publicSectionText: string;
-  privateSectionTitle: string;
-  privateSectionText: string;
+  heroDetail: string;
+  stats: LandingStatCopy[];
+  offersEyebrow: string;
+  offersTitle: string;
+  offersSubtitle: string;
+  offers: LandingOfferCopy[];
+  flowEyebrow: string;
+  flowTitle: string;
+  flowSubtitle: string;
+  flowSteps: LandingFlowStepCopy[];
+  finalCtaTitle: string;
+  finalCtaSubtitle: string;
+  finalPrimaryCta: string;
+  finalSecondaryCta: string;
 }
 
 interface PublicPageCopy {
@@ -73,16 +99,71 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
     },
     landing: {
       badge: "School SaaS",
-      title: "Dos mundos claros: experiencia pública y sistema privado",
+      title: "Una plataforma escolar moderna para captar familias y operar sin fricción",
       subtitle:
-        "La app ya puede crecer con una capa pública orientada a marketing e información, y una capa privada para operación escolar y seguimiento académico.",
+        "Combinamos una experiencia pública pensada para conversión con un sistema privado para docentes, administración y seguimiento académico en tiempo real.",
       primaryCta: "Explorar cursos",
       secondaryCta: "Ver noticias",
       tertiaryCta: "Ingresar al sistema",
-      publicSectionTitle: "Mundo público",
-      publicSectionText: "Landing, cursos, noticias, contacto e inscripciones para captar, informar y convertir.",
-      privateSectionTitle: "Mundo privado",
-      privateSectionText: "Dashboard, calificaciones y gestión interna para operar el colegio con acceso protegido.",
+      heroDetail:
+        "Diseñado para escalar desde una escuela pequeña hasta múltiples sedes, con arquitectura modular y foco en trazabilidad institucional.",
+      stats: [
+        {
+          value: "24/7",
+          label: "Acceso web para familias y equipo interno",
+        },
+        {
+          value: "100%",
+          label: "Flujos clave centralizados en un solo sistema",
+        },
+        {
+          value: "Roles",
+          label: "Permisos separados para admin, docentes y familias",
+        },
+      ],
+      offersEyebrow: "Lo que ofrece",
+      offersTitle: "Todo el ciclo escolar en un solo lugar",
+      offersSubtitle:
+        "Desde la primera visita a la web hasta la gestión interna del colegio, cada módulo está pensado para reducir fricción y mejorar la experiencia.",
+      offers: [
+        {
+          title: "Presencia pública de alto impacto",
+          description: "Landing, cursos, noticias y contacto optimizados para comunicar valor institucional y convertir interés en inscripciones.",
+          tag: "Marketing escolar",
+        },
+        {
+          title: "Operación académica protegida",
+          description: "Dashboard privado para seguimiento de calificaciones, gestión de usuarios y procesos internos con acceso por rol.",
+          tag: "Gestión interna",
+        },
+        {
+          title: "Base lista para escalar",
+          description: "Arquitectura modular y serverless preparada para sumar cobranzas, reportes y automatizaciones sin rehacer el núcleo.",
+          tag: "Escalabilidad",
+        },
+      ],
+      flowEyebrow: "Cómo funciona",
+      flowTitle: "Un recorrido claro para familias y equipo escolar",
+      flowSubtitle: "Cada etapa fue pensada para que la información fluya y las decisiones sean más rápidas.",
+      flowSteps: [
+        {
+          title: "Descubrimiento",
+          description: "Las familias conocen la propuesta educativa y acceden a cursos, novedades e información institucional.",
+        },
+        {
+          title: "Conversión",
+          description: "La página de inscripciones guía el proceso con pasos claros, requisitos y llamados a la acción concretos.",
+        },
+        {
+          title: "Operación diaria",
+          description: "El equipo interno gestiona académicos y administrativos desde un dashboard unificado con control de acceso.",
+        },
+      ],
+      finalCtaTitle: "Listo para transformar la gestión de tu escuela",
+      finalCtaSubtitle:
+        "Implementá una experiencia digital profesional, escalable y centrada en resultados para familias, docentes y administración.",
+      finalPrimaryCta: "Comenzar ahora",
+      finalSecondaryCta: "Ir al dashboard",
     },
     courses: {
       eyebrow: "Oferta académica",
@@ -141,16 +222,71 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
     },
     landing: {
       badge: "School SaaS",
-      title: "Two clear worlds: public experience and private system",
+      title: "A modern school platform to attract families and run operations smoothly",
       subtitle:
-        "The app can now grow with a public marketing and information layer, plus a private layer for school operations and academic follow-up.",
+        "We combine a conversion-focused public experience with a private system for teachers, administration and real-time academic tracking.",
       primaryCta: "Explore courses",
       secondaryCta: "Read news",
       tertiaryCta: "Enter the system",
-      publicSectionTitle: "Public world",
-      publicSectionText: "Landing, courses, news, contact and admissions to attract, inform and convert.",
-      privateSectionTitle: "Private world",
-      privateSectionText: "Dashboard, grades and internal management for protected school operations.",
+      heroDetail:
+        "Built to scale from a single school to multiple campuses, with modular architecture and strong institutional traceability.",
+      stats: [
+        {
+          value: "24/7",
+          label: "Web access for families and internal teams",
+        },
+        {
+          value: "100%",
+          label: "Core school workflows centralized in one platform",
+        },
+        {
+          value: "Roles",
+          label: "Permission boundaries for admin, teachers and families",
+        },
+      ],
+      offersEyebrow: "What you get",
+      offersTitle: "The full school lifecycle in one place",
+      offersSubtitle:
+        "From the first website visit to private daily operations, every module is designed to reduce friction and improve experience.",
+      offers: [
+        {
+          title: "High-impact public presence",
+          description: "Landing, courses, news and contact pages optimized to communicate school value and convert interest into admissions.",
+          tag: "School marketing",
+        },
+        {
+          title: "Protected academic operations",
+          description: "Private dashboard for grades tracking, user management and internal workflows with role-based access.",
+          tag: "Internal management",
+        },
+        {
+          title: "Scale-ready foundation",
+          description: "Modular serverless architecture ready for billing, reporting and automations without rebuilding the core.",
+          tag: "Scalability",
+        },
+      ],
+      flowEyebrow: "How it works",
+      flowTitle: "A clear path for families and school teams",
+      flowSubtitle: "Each stage is crafted so information flows and decisions happen faster.",
+      flowSteps: [
+        {
+          title: "Discovery",
+          description: "Families discover your educational offering through courses, updates and institutional information.",
+        },
+        {
+          title: "Conversion",
+          description: "The admissions page guides users with clear steps, requirements and focused calls to action.",
+        },
+        {
+          title: "Daily operations",
+          description: "Internal teams manage academic and administrative work from a unified, permission-aware dashboard.",
+        },
+      ],
+      finalCtaTitle: "Ready to transform your school management",
+      finalCtaSubtitle:
+        "Launch a professional, scalable digital experience centered on outcomes for families, teachers and administrators.",
+      finalPrimaryCta: "Get started",
+      finalSecondaryCta: "Go to dashboard",
     },
     courses: {
       eyebrow: "Academic offer",
