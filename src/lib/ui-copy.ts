@@ -23,6 +23,9 @@ interface AuthCopy {
   roleParent: string;
   roleAdmin: string;
   passwordHint: string;
+  organization: string;
+  organizationPlaceholder: string;
+  organizationHint: string;
   loginAction: string;
   registerAction: string;
   loading: string;
@@ -88,6 +91,9 @@ export const UI_COPY: Record<Language, UiCopy> = {
       roleParent: "Padre/Madre",
       roleAdmin: "Administrador",
       passwordHint: "Mínimo 8 caracteres, con mayúscula, minúscula y número.",
+      organization: "Institución",
+      organizationPlaceholder: "Seleccioná una institución",
+      organizationHint: "Vas a pertenecer a esta institución.",
       loginAction: "Entrar",
       registerAction: "Registrarme",
       loading: "Procesando...",
@@ -145,6 +151,9 @@ export const UI_COPY: Record<Language, UiCopy> = {
       roleParent: "Parent",
       roleAdmin: "Admin",
       passwordHint: "Minimum 8 chars, with uppercase, lowercase and number.",
+      organization: "Institution",
+      organizationPlaceholder: "Select an institution",
+      organizationHint: "You will belong to this institution.",
       loginAction: "Sign in",
       registerAction: "Create account",
       loading: "Processing...",

@@ -3,6 +3,11 @@ export interface CreateOrganizationInput {
   slug?: string;
 }
 
+export interface PublicOrganizationItem {
+  slug: string;
+  name: string;
+}
+
 export interface OrganizationRecord {
   id: string;
   name: string;

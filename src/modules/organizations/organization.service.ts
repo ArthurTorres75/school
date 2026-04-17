@@ -4,10 +4,16 @@ import type {
   CreateOrganizationInput,
   OrganizationResponse,
   OrganizationRecord,
+  PublicOrganizationItem,
 } from "@/modules/organizations/organization.types";
 
 export class OrganizationService {
   constructor(private readonly organizationRepository: OrganizationRepository) {}
+
+  async findAll(): Promise<PublicOrganizationItem[]> {
+    const organizations = await this.organizationRepository.findAll();
+    return organizations.map((org) => ({ slug: org.slug, name: org.name }));
+  }
 
   async create(input: CreateOrganizationInput): Promise<OrganizationResponse> {
     const slug = normalizeOrganizationSlug(input.slug ?? input.name);

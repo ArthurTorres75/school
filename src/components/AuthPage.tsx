@@ -3,24 +3,17 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { TopControlsHeader } from "@/components/shared/TopControlsHeader";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { UI_COPY } from "@/lib/ui-copy";
+import { loginSchema, registerUserSchema, type LoginInput, type RegisterUserInput } from "@/modules/auth/auth.schema";
+import type { PublicOrganizationItem } from "@/modules/organizations/organization.types";
 
 type AuthMode = "login" | "register";
-type UserRole = "student" | "teacher" | "parent";
-
-interface LoginInput {
-  email: string;
-  password: string;
-}
-
-interface RegisterInput extends LoginInput {
-  fullName: string;
-  role: UserRole;
-}
 
 interface SafeUser {
   id: string;
@@ -38,9 +31,22 @@ interface AuthResponse {
   type?: string;
 }
 
+interface OrganizationsResponse {
+  success: boolean;
+  data: PublicOrganizationItem[];
+}
+
 interface AuthPageProps {
   initialMode?: AuthMode;
 }
+
+const INPUT_CLASS =
+  "mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
+const SELECT_CLASS =
+  "mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
+const ERROR_TEXT_CLASS = "mt-1 text-xs text-destructive";
 
 export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const router = useRouter();
@@ -48,12 +54,18 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const copy = UI_COPY[language].auth;
 
   const [mode, setMode] = useState<AuthMode>(initialMode);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<UserRole>("student");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
+
+  const loginForm = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  const registerForm = useForm<RegisterUserInput>({
+    resolver: zodResolver(registerUserSchema),
+    defaultValues: { fullName: "", email: "", password: "", role: "student", organizationSlug: "" },
+  });
 
   const { data: currentUser } = useQuery({
     queryKey: ["auth:me"],
@@ -64,6 +76,19 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
     },
     retry: false,
   });
+
+  const { data: organizationsData } = useQuery({
+    queryKey: ["organizations:public"],
+    queryFn: async () => {
+      const res = await fetch("/api/organizations");
+      if (!res.ok) return { success: false, data: [] };
+      return res.json() as Promise<OrganizationsResponse>;
+    },
+    enabled: mode === "register",
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const organizations = organizationsData?.data ?? [];
 
   const loginMutation = useMutation({
     mutationFn: async (input: LoginInput) => {
@@ -78,8 +103,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
       if (data.success) {
         setMessage(copy.loginWelcome(data.data?.fullName ?? ""));
         setMessageType("success");
-        setEmail("");
-        setPassword("");
+        loginForm.reset();
         setTimeout(() => {
           router.push("/dashboard");
           router.refresh();
@@ -96,7 +120,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   });
 
   const registerMutation = useMutation({
-    mutationFn: async (input: RegisterInput) => {
+    mutationFn: async (input: RegisterUserInput) => {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -108,9 +132,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
       if (data.success) {
         setMessage(copy.registerWelcome(data.data?.fullName ?? ""));
         setMessageType("success");
-        setEmail("");
-        setPassword("");
-        setFullName("");
+        registerForm.reset();
         setTimeout(() => {
           router.push("/dashboard");
           router.refresh();
@@ -132,6 +154,13 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
     router.refresh();
   };
 
+  const switchMode = (next: AuthMode) => {
+    setMode(next);
+    setMessage("");
+    loginForm.clearErrors();
+    registerForm.clearErrors();
+  };
+
   if (currentUser?.data) {
     return (
       <div className="min-h-screen bg-linear-to-b from-background via-secondary/30 to-accent/16 px-4 py-6 sm:px-6 sm:py-8">
@@ -141,8 +170,8 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
           <div className="flex justify-center">
             <div className="w-full max-w-md space-y-6 rounded-3xl border border-primary/15 bg-card/95 p-6 shadow-xl shadow-primary/10">
               <div className="space-y-2">
-                <h1 className="text-2xl font-semibold text-foreground">Sesión activa</h1>
-                <p className="text-sm text-muted-foreground">Estás autenticado como:</p>
+                <h1 className="text-2xl font-semibold text-foreground">Sesion activa</h1>
+                <p className="text-sm text-muted-foreground">Estas autenticado como:</p>
               </div>
 
               <div className="space-y-3 rounded-2xl border border-secondary/30 bg-secondary/30 p-4">
@@ -164,13 +193,8 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                 <Button onClick={() => router.push("/dashboard")} className="flex-1" aria-label="Ir al dashboard">
                   Dashboard
                 </Button>
-                <Button
-                  onClick={handleLogout}
-                  variant="outline"
-                  className="flex-1"
-                  aria-label="Cerrar sesión"
-                >
-                  Cerrar sesión
+                <Button onClick={handleLogout} variant="outline" className="flex-1" aria-label="Cerrar sesion">
+                  Cerrar sesion
                 </Button>
               </div>
 
@@ -227,106 +251,148 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                 {mode === "login" ? copy.loginTitle : copy.registerTitle}
               </h1>
               <p className="text-sm text-muted-foreground">
-                {mode === "login"
-                  ? copy.loginSubtitle
-                  : copy.registerSubtitle}
+                {mode === "login" ? copy.loginSubtitle : copy.registerSubtitle}
               </p>
             </div>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (mode === "login") {
-                  loginMutation.mutate({ email, password });
-                } else {
-                  registerMutation.mutate({ email, password, fullName, role });
-                }
-              }}
-              className="space-y-4"
-            >
-              {mode === "register" && (
+            {mode === "login" ? (
+              <form
+                onSubmit={loginForm.handleSubmit((data) => loginMutation.mutate(data))}
+                className="space-y-4"
+              >
                 <div>
-                  <label className="block text-sm font-medium text-foreground" aria-label={copy.fullName}>
-                    {copy.fullName}
-                  </label>
+                  <label className="block text-sm font-medium text-foreground">{copy.email}</label>
                   <input
+                    {...loginForm.register("email")}
+                    type="email"
+                    className={INPUT_CLASS}
+                    placeholder="usuario@example.com"
+                    aria-label={copy.email}
+                  />
+                  {loginForm.formState.errors.email && (
+                    <p className={ERROR_TEXT_CLASS}>{loginForm.formState.errors.email.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground">{copy.password}</label>
+                  <input
+                    {...loginForm.register("password")}
+                    type="password"
+                    className={INPUT_CLASS}
+                    placeholder="••••••••"
+                    aria-label={copy.password}
+                  />
+                  {loginForm.formState.errors.password && (
+                    <p className={ERROR_TEXT_CLASS}>{loginForm.formState.errors.password.message}</p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loginMutation.isPending}
+                  className="w-full"
+                  aria-label={copy.loginAction}
+                >
+                  {loginMutation.isPending ? copy.loading : copy.loginAction}
+                </Button>
+              </form>
+            ) : (
+              <form
+                onSubmit={registerForm.handleSubmit((data) => registerMutation.mutate(data))}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-foreground">{copy.fullName}</label>
+                  <input
+                    {...registerForm.register("fullName")}
                     type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required={mode === "register"}
-                    className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    placeholder="Juan Pérez"
+                    className={INPUT_CLASS}
+                    placeholder="Juan Perez"
                     aria-label={copy.fullName}
                   />
+                  {registerForm.formState.errors.fullName && (
+                    <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.fullName.message}</p>
+                  )}
                 </div>
-              )}
 
-              <div>
-                <label className="block text-sm font-medium text-foreground" aria-label={copy.email}>
-                  {copy.email}
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                  required
-                  className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  placeholder="usuario@example.com"
-                  aria-label={copy.email}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground" aria-label={copy.password}>
-                  {copy.password}
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  placeholder="••••••••"
-                  aria-label={copy.password}
-                />
-                {mode === "register" && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {copy.passwordHint}
-                  </p>
-                )}
-              </div>
-
-              {mode === "register" && (
                 <div>
-                  <label className="block text-sm font-medium text-foreground" aria-label={copy.role}>
-                    {copy.role}
-                  </label>
+                  <label className="block text-sm font-medium text-foreground">{copy.email}</label>
+                  <input
+                    {...registerForm.register("email")}
+                    type="email"
+                    className={INPUT_CLASS}
+                    placeholder="usuario@example.com"
+                    aria-label={copy.email}
+                  />
+                  {registerForm.formState.errors.email && (
+                    <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.email.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground">{copy.password}</label>
+                  <input
+                    {...registerForm.register("password")}
+                    type="password"
+                    className={INPUT_CLASS}
+                    placeholder="••••••••"
+                    aria-label={copy.password}
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground">{copy.passwordHint}</p>
+                  {registerForm.formState.errors.password && (
+                    <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.password.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground">{copy.role}</label>
                   <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value as UserRole)}
-                    className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    {...registerForm.register("role")}
+                    className={SELECT_CLASS}
                     aria-label={copy.role}
                   >
                     <option value="student">{copy.roleStudent}</option>
                     <option value="teacher">{copy.roleTeacher}</option>
                     <option value="parent">{copy.roleParent}</option>
                   </select>
+                  {registerForm.formState.errors.role && (
+                    <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.role.message}</p>
+                  )}
                 </div>
-              )}
 
-              <Button
-                type="submit"
-                disabled={loginMutation.isPending || registerMutation.isPending}
-                className="w-full"
-                aria-label={mode === "login" ? copy.loginAction : copy.registerAction}
-              >
-                {loginMutation.isPending || registerMutation.isPending
-                  ? copy.loading
-                  : mode === "login"
-                    ? copy.loginAction
-                    : copy.registerAction}
-              </Button>
-            </form>
+                {organizations.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-foreground">{copy.organization}</label>
+                    <select
+                      {...registerForm.register("organizationSlug")}
+                      className={SELECT_CLASS}
+                      aria-label={copy.organization}
+                    >
+                      <option value="">{copy.organizationPlaceholder}</option>
+                      {organizations.map((org) => (
+                        <option key={org.slug} value={org.slug}>
+                          {org.name}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-1 text-xs text-muted-foreground">{copy.organizationHint}</p>
+                    {registerForm.formState.errors.organizationSlug && (
+                      <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.organizationSlug.message}</p>
+                    )}
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  disabled={registerMutation.isPending}
+                  className="w-full"
+                  aria-label={copy.registerAction}
+                >
+                  {registerMutation.isPending ? copy.loading : copy.registerAction}
+                </Button>
+              </form>
+            )}
 
             {message && (
               <div
@@ -341,16 +407,11 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
             )}
 
             <button
-              onClick={() => {
-                setMode(mode === "login" ? "register" : "login");
-                setMessage("");
-              }}
+              onClick={() => switchMode(mode === "login" ? "register" : "login")}
               className="w-full text-sm text-muted-foreground hover:text-foreground"
               aria-label={mode === "login" ? copy.switchToRegister : copy.switchToLogin}
             >
-              {mode === "login"
-                ? copy.switchToRegister
-                : copy.switchToLogin}
+              {mode === "login" ? copy.switchToRegister : copy.switchToLogin}
             </button>
           </div>
         </div>
