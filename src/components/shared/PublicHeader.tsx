@@ -16,6 +16,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { SITE_COPY } from "@/lib/site-copy";
+import { UI_COPY } from "@/lib/ui-copy";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ export function PublicHeader() {
   const pathname = usePathname();
   const { language } = useLanguage();
   const copy = SITE_COPY[language];
+  const uiCopy = UI_COPY[language];
   const [isOpen, setIsOpen] = useState(false);
 
   const navigationItems = [
@@ -43,6 +45,9 @@ export function PublicHeader() {
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeSwitcher />
+          <Button asChild variant="outline" size="sm" className="rounded-full border-primary/20 bg-primary/8 text-primary hover:bg-primary/12">
+            <Link href="/login">{uiCopy.auth.loginAction}</Link>
+          </Button>
           <Button
             variant="outline"
             size="icon"
