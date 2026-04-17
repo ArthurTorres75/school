@@ -10,7 +10,14 @@ import { Button } from "@/components/ui/button";
 import { TopControlsHeader } from "@/components/shared/TopControlsHeader";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { UI_COPY } from "@/lib/ui-copy";
-import { loginSchema, registerUserSchema, type LoginInput, type RegisterUserInput } from "@/modules/auth/auth.schema";
+import {
+  loginSchema,
+  registerUserSchema,
+  type LoginFormInput,
+  type LoginInput,
+  type RegisterUserFormInput,
+  type RegisterUserInput,
+} from "@/modules/auth/auth.schema";
 import type { PublicOrganizationItem } from "@/modules/organizations/organization.types";
 
 type AuthMode = "login" | "register";
@@ -57,12 +64,12 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
 
-  const loginForm = useForm<LoginInput>({
+  const loginForm = useForm<LoginFormInput, undefined, LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const registerForm = useForm<RegisterUserInput>({
+  const registerForm = useForm<RegisterUserFormInput, undefined, RegisterUserInput>({
     resolver: zodResolver(registerUserSchema),
     defaultValues: { fullName: "", email: "", password: "", role: "student", organizationSlug: "" },
   });

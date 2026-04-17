@@ -36,5 +36,7 @@ export const loginSchema = z.object({
   password: z.string().min(1, { error: "La contrasena es obligatoria." }),
 });
 
+export type RegisterUserFormInput = z.input<typeof registerUserSchema>;
 export type RegisterUserInput = z.infer<typeof registerUserSchema>;
+export type LoginFormInput = z.input<typeof loginSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
