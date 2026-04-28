@@ -61,10 +61,75 @@ interface PublicPageCopy {
   detail: string;
 }
 
+interface AdmissionsFormCopy {
+  title: string;
+  subtitle: string;
+  organizationLabel: string;
+  organizationPlaceholder: string;
+  studentLabel: string;
+  studentPlaceholder: string;
+  parentLabel: string;
+  parentPlaceholder: string;
+  birthDateLabel: string;
+  gradeLevelLabel: string;
+  cedulaLabel: string;
+  gradeHint: string;
+  coursesLabel: string;
+  coursesAutoHint: string;
+  coursesCountLabel: string;
+  coursesStateLoading: string;
+  coursesStateReady: string;
+  coursesStateEmpty: string;
+  emptyCourses: string;
+  summaryTitle: string;
+  summaryStudent: string;
+  summaryParent: string;
+  summaryCourses: string;
+  submitLabel: string;
+  loadingLabel: string;
+  successLabel: string;
+  genericErrorLabel: string;
+  unauthorizedLabel: string;
+  forbiddenLabel: string;
+  loginLabel: string;
+  ageLabel: string;
+}
+
 interface PrivatePageCopy {
   title: string;
   subtitle: string;
   detail: string;
+  inscriptionCtaLabel?: string;
+  inscriptionCtaHint?: string;
+}
+
+interface DashboardPageCopy extends PrivatePageCopy {
+  roleActionsTitle: string;
+  roleActionsSubtitle: string;
+  roleActionsEmpty: string;
+  roleActionsAdmin: string[];
+  roleActionsParent: string[];
+  roleActionsTeacher: string[];
+  roleActionsStudent: string[];
+}
+
+interface GradesPageCopy extends PrivatePageCopy {
+  parentChildrenTitle: string;
+  parentChildrenSubtitle: string;
+  adminChildrenTitle: string;
+  adminChildrenSubtitle: string;
+  parentChildrenLoading: string;
+  parentChildrenError: string;
+  parentNoChildren: string;
+  parentOpenGradesLabel: string;
+  parentInscriptionStatusInscribed: string;
+  parentInscriptionStatusPending: string;
+  parentGradesListTitle: string;
+  parentSelectedChildLabel: string;
+  parentAverageLabel: string;
+  parentNoGrades: string;
+  parentGradesLoading: string;
+  parentGradesError: string;
 }
 
 interface SiteCopy {
@@ -76,8 +141,9 @@ interface SiteCopy {
   news: PublicPageCopy;
   contact: PublicPageCopy;
   admissions: PublicPageCopy;
-  dashboard: PrivatePageCopy;
-  grades: PrivatePageCopy;
+  admissionsForm: AdmissionsFormCopy;
+  dashboard: DashboardPageCopy;
+  grades: GradesPageCopy;
   management: PrivatePageCopy;
 }
 
@@ -189,15 +255,89 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
       subtitle: "Página orientada a captación con pasos, requisitos y CTA claros hacia el proceso de admisión.",
       detail: "Es un buen lugar para montar formularios, agenda de entrevistas y seguimiento del funnel.",
     },
+    admissionsForm: {
+      title: "Inscripción escolar",
+      subtitle: "Completá los datos del estudiante. Las materias activas se asignan automáticamente.",
+      organizationLabel: "Organización",
+      organizationPlaceholder: "Seleccioná una organización",
+      studentLabel: "Estudiante",
+      studentPlaceholder: "Seleccioná un estudiante",
+      parentLabel: "Representante",
+      parentPlaceholder: "Seleccioná un representante",
+      birthDateLabel: "Fecha de nacimiento",
+      gradeLevelLabel: "Grado a cursar",
+      cedulaLabel: "Cédula del estudiante",
+      gradeHint: "Usá un valor entre 1 y 12.",
+      coursesLabel: "Materias asignadas automáticamente",
+      coursesAutoHint: "En nivel escolar se asignan todas las materias activas, sin selección manual.",
+      coursesCountLabel: "Materias activas",
+      coursesStateLoading: "Cargando",
+      coursesStateReady: "Listo",
+      coursesStateEmpty: "Sin materias",
+      emptyCourses: "No hay materias activas para esta organización.",
+      summaryTitle: "Resumen de inscripción",
+      summaryStudent: "Estudiante",
+      summaryParent: "Representante",
+      summaryCourses: "Materias a asignar",
+      submitLabel: "Confirmar inscripción",
+      loadingLabel: "Guardando inscripción...",
+      successLabel: "Inscripción completada correctamente.",
+      genericErrorLabel: "No se pudo completar la inscripción.",
+      unauthorizedLabel: "Necesitás iniciar sesión para inscribir estudiantes.",
+      forbiddenLabel: "Solo administradores y representantes pueden realizar inscripciones.",
+      loginLabel: "Ir a autenticación",
+      ageLabel: "Edad calculada",
+    },
     dashboard: {
       title: "Dashboard",
       subtitle: "Centro de operaciones para usuarios autenticados.",
       detail: "Desde acá se distribuyen los accesos principales del sistema según el rol activo.",
+      inscriptionCtaLabel: "Ir a inscribir estudiante",
+      inscriptionCtaHint: "Disponible para administradores y representantes.",
+      roleActionsTitle: "Acciones disponibles según tu rol",
+      roleActionsSubtitle: "Estas acciones se habilitan o restringen automáticamente por permisos.",
+      roleActionsEmpty: "No hay acciones configuradas para tu rol en este momento.",
+      roleActionsAdmin: [
+        "Inscribir estudiantes y asignar representante cuando corresponda.",
+        "Gestionar organizaciones, usuarios y configuraciones internas.",
+        "Supervisar calificaciones y estado general de la operación.",
+      ],
+      roleActionsParent: [
+        "Inscribir a tus estudiantes vinculados dentro de tu organización.",
+        "Consultar estado de inscripción y materias asignadas.",
+        "Hacer seguimiento académico desde las vistas habilitadas.",
+      ],
+      roleActionsTeacher: [
+        "Consultar cursos y estudiantes asignados.",
+        "Registrar o revisar calificaciones según permisos vigentes.",
+        "Dar seguimiento académico de los grupos a cargo.",
+      ],
+      roleActionsStudent: [
+        "Consultar información académica y estado personal.",
+        "Ver materias y novedades publicadas por la institución.",
+        "Seguir tus avances en los módulos habilitados.",
+      ],
     },
     grades: {
       title: "Calificaciones",
       subtitle: "Base inicial para notas, boletines y seguimiento académico.",
       detail: "Después podemos dividir por alumno, curso, período y permisos por rol.",
+      parentChildrenTitle: "Mis hijos",
+      parentChildrenSubtitle: "Seleccioná un estudiante para ver sus calificaciones y estado de inscripción.",
+      adminChildrenTitle: "Estudiantes",
+      adminChildrenSubtitle: "Seleccioná un estudiante para ver sus calificaciones y estado de inscripción.",
+      parentChildrenLoading: "Cargando hijos...",
+      parentChildrenError: "No se pudo cargar la lista de hijos.",
+      parentNoChildren: "No encontramos estudiantes vinculados a tu perfil.",
+      parentOpenGradesLabel: "Ver calificaciones",
+      parentInscriptionStatusInscribed: "Inscripto",
+      parentInscriptionStatusPending: "Sin inscripción",
+      parentGradesListTitle: "Detalle de calificaciones",
+      parentSelectedChildLabel: "Estudiante seleccionado",
+      parentAverageLabel: "Promedio general",
+      parentNoGrades: "Este estudiante todavía no tiene calificaciones registradas.",
+      parentGradesLoading: "Cargando calificaciones...",
+      parentGradesError: "No se pudieron cargar las calificaciones del estudiante.",
     },
     management: {
       title: "Gestión interna",
@@ -312,15 +452,89 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
       subtitle: "Conversion-oriented page with steps, requirements and clear CTAs into the admission process.",
       detail: "It is a strong place to build forms, interview scheduling and funnel tracking.",
     },
+    admissionsForm: {
+      title: "School enrollment",
+      subtitle: "Complete the student data. Active subjects are auto-assigned.",
+      organizationLabel: "Organization",
+      organizationPlaceholder: "Select an organization",
+      studentLabel: "Student",
+      studentPlaceholder: "Select a student",
+      parentLabel: "Guardian",
+      parentPlaceholder: "Select a guardian",
+      birthDateLabel: "Birth date",
+      gradeLevelLabel: "Grade level",
+      cedulaLabel: "Student national ID",
+      gradeHint: "Use a value between 1 and 12.",
+      coursesLabel: "Subjects auto-assigned",
+      coursesAutoHint: "In school mode all active subjects are assigned automatically.",
+      coursesCountLabel: "Active subjects",
+      coursesStateLoading: "Loading",
+      coursesStateReady: "Ready",
+      coursesStateEmpty: "No subjects",
+      emptyCourses: "No active subjects available for this organization.",
+      summaryTitle: "Enrollment summary",
+      summaryStudent: "Student",
+      summaryParent: "Guardian",
+      summaryCourses: "Subjects to assign",
+      submitLabel: "Confirm enrollment",
+      loadingLabel: "Saving enrollment...",
+      successLabel: "Enrollment completed successfully.",
+      genericErrorLabel: "Enrollment could not be completed.",
+      unauthorizedLabel: "You need to sign in to enroll students.",
+      forbiddenLabel: "Only admins and guardians can enroll students.",
+      loginLabel: "Go to authentication",
+      ageLabel: "Calculated age",
+    },
     dashboard: {
       title: "Dashboard",
       subtitle: "Operations center for authenticated users.",
       detail: "From here we can route the main system access points by active role.",
+      inscriptionCtaLabel: "Go to student enrollment",
+      inscriptionCtaHint: "Available for admins and guardians.",
+      roleActionsTitle: "Available actions for your role",
+      roleActionsSubtitle: "These actions are enabled or restricted automatically by permissions.",
+      roleActionsEmpty: "There are no actions configured for your role at the moment.",
+      roleActionsAdmin: [
+        "Enroll students and assign guardians when needed.",
+        "Manage organizations, users and internal settings.",
+        "Monitor grades and overall operational status.",
+      ],
+      roleActionsParent: [
+        "Enroll your linked students within your organization.",
+        "Check enrollment status and assigned subjects.",
+        "Track academic progress from enabled views.",
+      ],
+      roleActionsTeacher: [
+        "Review assigned courses and students.",
+        "Register or review grades based on active permissions.",
+        "Follow academic progress for your groups.",
+      ],
+      roleActionsStudent: [
+        "Review academic information and personal status.",
+        "See subjects and institutional updates.",
+        "Track your progress in enabled modules.",
+      ],
     },
     grades: {
       title: "Grades",
       subtitle: "Initial foundation for grades, report cards and academic tracking.",
       detail: "Later we can split by student, course, period and role-based permissions.",
+      parentChildrenTitle: "My children",
+      parentChildrenSubtitle: "Select a student to view grades and enrollment status.",
+      adminChildrenTitle: "Students",
+      adminChildrenSubtitle: "Select a student to view grades and enrollment status.",
+      parentChildrenLoading: "Loading children...",
+      parentChildrenError: "The children list could not be loaded.",
+      parentNoChildren: "No students are linked to your profile.",
+      parentOpenGradesLabel: "View grades",
+      parentInscriptionStatusInscribed: "Enrolled",
+      parentInscriptionStatusPending: "Not enrolled",
+      parentGradesListTitle: "Grades detail",
+      parentSelectedChildLabel: "Selected student",
+      parentAverageLabel: "Overall average",
+      parentNoGrades: "This student has no grades yet.",
+      parentGradesLoading: "Loading grades...",
+      parentGradesError: "The student grades could not be loaded.",
     },
     management: {
       title: "Internal management",

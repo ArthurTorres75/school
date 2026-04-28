@@ -26,6 +26,14 @@ interface AuthCopy {
   organization: string;
   organizationPlaceholder: string;
   organizationHint: string;
+  studentRepresentativeEmail: string;
+  studentRepresentativeEmailHint: string;
+  studentSearchLabel: string;
+  studentSearchPlaceholder: string;
+  studentSelectPlaceholder: string;
+  noStudentsFound: string;
+  parentEmail: string;
+  parentEmailHint: string;
   loginAction: string;
   registerAction: string;
   loading: string;
@@ -94,6 +102,14 @@ export const UI_COPY: Record<Language, UiCopy> = {
       organization: "Institución",
       organizationPlaceholder: "Seleccioná una institución",
       organizationHint: "Vas a pertenecer a esta institución.",
+      studentRepresentativeEmail: "Email del estudiante a representar",
+      studentRepresentativeEmailHint: "Si lo completás, se vinculará automáticamente al estudiante existente.",
+      studentSearchLabel: "Buscar estudiante",
+      studentSearchPlaceholder: "Nombre o email del estudiante",
+      studentSelectPlaceholder: "Seleccioná un estudiante",
+      noStudentsFound: "No se encontraron estudiantes para esta institución.",
+      parentEmail: "Email del representante",
+      parentEmailHint: "Opcional para estudiantes.",
       loginAction: "Entrar",
       registerAction: "Registrarme",
       loading: "Procesando...",
@@ -154,6 +170,14 @@ export const UI_COPY: Record<Language, UiCopy> = {
       organization: "Institution",
       organizationPlaceholder: "Select an institution",
       organizationHint: "You will belong to this institution.",
+      studentRepresentativeEmail: "Student email to represent",
+      studentRepresentativeEmailHint: "If provided, it will be linked automatically to an existing student.",
+      studentSearchLabel: "Search student",
+      studentSearchPlaceholder: "Student name or email",
+      studentSelectPlaceholder: "Select a student",
+      noStudentsFound: "No students found for this institution.",
+      parentEmail: "Guardian email",
+      parentEmailHint: "Optional for student registration.",
       loginAction: "Sign in",
       registerAction: "Create account",
       loading: "Processing...",

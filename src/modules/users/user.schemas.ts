@@ -7,6 +7,24 @@ const normalizedEmailSchema = z
   .transform((value) => value.trim().toLowerCase())
   .pipe(z.email({ error: "Correo electronico invalido." }));
 
+const optionalNormalizedEmailSchema = z.preprocess((value) => {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  const normalizedValue = value.trim().toLowerCase();
+  return normalizedValue.length > 0 ? normalizedValue : undefined;
+}, z.email({ error: "Correo electronico invalido." }).optional());
+
+const optionalOrganizationSlugSchema = z.preprocess((value) => {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  const normalizedValue = value.trim().toLowerCase();
+  return normalizedValue.length > 0 ? normalizedValue : undefined;
+}, z.string().min(2).max(64).optional());
+
 const passwordPolicySchema = z
   .string()
   .min(8, { error: "La contrasena debe tener al menos 8 caracteres." })
@@ -24,11 +42,27 @@ export const registerUserSchema = z.object({
       .max(120, { error: "El nombre supera el largo permitido." }),
   ),
   email: normalizedEmailSchema,
+  parentEmail: optionalNormalizedEmailSchema,
+  representedStudentEmail: optionalNormalizedEmailSchema,
   password: passwordPolicySchema,
   role: z.enum([USER_ROLE.TEACHER, USER_ROLE.PARENT, USER_ROLE.STUDENT]),
-  organizationSlug: z
-    .preprocess((value) => (typeof value === "string" ? value.trim().toLowerCase() : value), z.string().min(2).max(64))
-    .optional(),
+  organizationSlug: optionalOrganizationSlugSchema,
+}).superRefine((data, ctx) => {
+  if (data.role !== USER_ROLE.STUDENT && data.parentEmail) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Solo los estudiantes pueden enviar parentEmail.",
+      path: ["parentEmail"],
+    });
+  }
+
+  if (data.role !== USER_ROLE.PARENT && data.representedStudentEmail) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Solo padres/madres pueden indicar un estudiante representado.",
+      path: ["representedStudentEmail"],
+    });
+  }
 });
 
 export const loginSchema = z.object({

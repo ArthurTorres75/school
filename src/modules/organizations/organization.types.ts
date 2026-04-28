@@ -4,6 +4,7 @@ export interface CreateOrganizationInput {
 }
 
 export interface PublicOrganizationItem {
+  id: string;
   slug: string;
   name: string;
 }

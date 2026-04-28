@@ -32,7 +32,7 @@ export function PublicHeader() {
     { href: "/cursos", label: copy.publicNav.courses },
     { href: "/noticias", label: copy.publicNav.news },
     { href: "/contacto", label: copy.publicNav.contact },
-    { href: "/inscripciones", label: copy.publicNav.admissions },
+    { href: "/auth", label: copy.publicNav.admissions },
   ];
 
   return (

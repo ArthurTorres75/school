@@ -58,6 +58,8 @@ function mapError(error: unknown): NextResponse<ApiErrorBody> {
     const statusCode =
       error.code === AUTH_ERROR_CODE.USER_ALREADY_EXISTS
         ? 409
+        : error.code === AUTH_ERROR_CODE.VALIDATION_ERROR
+          ? 400
         : 401;
 
     return NextResponse.json(

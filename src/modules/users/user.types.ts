@@ -11,6 +11,8 @@ export interface UserCredentials {
 export interface CreateUserInput {
   fullName: string;
   email: string;
+  parentEmail?: string;
+  representedStudentEmail?: string;
   role: UserRole;
   organizationSlug?: string;
 }
@@ -25,6 +27,7 @@ export interface StoredUser {
   id: string;
   fullName: string;
   email: string;
+  registeredParentEmail?: string | null;
   role: UserRole;
   passwordHash: string;
   createdAt: Date;
@@ -35,6 +38,7 @@ export interface SafeUser {
   id: string;
   fullName: string;
   email: string;
+  registeredParentEmail?: string;
   role: UserRole;
   createdAt: string;
   updatedAt: string;

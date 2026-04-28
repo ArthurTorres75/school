@@ -20,6 +20,12 @@ enum EnrollmentStatus {
   dropped
 }
 
+enum InscriptionStatus {
+  active
+  completed
+  cancelled
+}
+
 enum GradeCategory {
   exam
   homework
@@ -31,6 +37,7 @@ model User {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   fullName       String
   email          String   @unique
+  registeredParentEmail String?
   role           UserRole
   passwordHash   String
   isActive       Boolean  @default(true)
@@ -51,6 +58,7 @@ model User {
 
   @@index([role])
   @@index([organizationId])
+  @@index([registeredParentEmail])
 }
 
 model Student {
@@ -62,6 +70,7 @@ model Student {
   organization   Organization @relation(fields: [organizationId], references: [id])
 
   enrollments Enrollment[]
+  inscription Inscription?
   grades      Grade[]
   parents     ParentStudent[]
 
@@ -94,6 +103,7 @@ model Parent {
   organization   Organization? @relation(fields: [organizationId], references: [id])
 
   children ParentStudent[]
+  inscriptions Inscription[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,16 +152,42 @@ model Enrollment {
   id        String           @id @default(auto()) @map("_id") @db.ObjectId
   studentId String           @db.ObjectId
   courseId  String           @db.ObjectId
+  inscriptionId String?      @db.ObjectId
   status    EnrollmentStatus @default(active)
 
-  student Student @relation(fields: [studentId], references: [id])
-  course  Course  @relation(fields: [courseId], references: [id])
+  student     Student      @relation(fields: [studentId], references: [id])
+  course      Course       @relation(fields: [courseId], references: [id])
+  inscription Inscription? @relation(fields: [inscriptionId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([studentId, courseId])
   @@index([courseId])
+  @@index([inscriptionId])
+}
+
+model Inscription {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  studentId      String           @unique @db.ObjectId
+  parentId       String           @db.ObjectId
+  organizationId String           @db.ObjectId
+  gradeLevel     Int
+  birthDate      DateTime
+  cedulaNumber   String           @unique
+  status         InscriptionStatus @default(active)
+
+  student      Student       @relation(fields: [studentId], references: [id])
+  parent       Parent        @relation(fields: [parentId], references: [id])
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  enrollments  Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+  @@index([organizationId])
+  @@index([status])
 }
 
 model Grade {
@@ -217,5 +253,6 @@ model Organization {
   teachers Teacher[]
   parents  Parent[]
   courses  Course[]
+  inscriptions Inscription[]
   news     News[]
 }

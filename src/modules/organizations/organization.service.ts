@@ -12,7 +12,7 @@ export class OrganizationService {
 
   async findAll(): Promise<PublicOrganizationItem[]> {
     const organizations = await this.organizationRepository.findAll();
-    return organizations.map((org) => ({ slug: org.slug, name: org.name }));
+    return organizations.map((org) => ({ id: org.id, slug: org.slug, name: org.name }));
   }
 
   async create(input: CreateOrganizationInput): Promise<OrganizationResponse> {

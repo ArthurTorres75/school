@@ -22,6 +22,8 @@ export class UserService {
     const createUserInput: CreateUserInput = {
       fullName: input.fullName,
       email: input.email,
+      parentEmail: input.parentEmail,
+      representedStudentEmail: input.representedStudentEmail,
       role: input.role,
       organizationSlug: input.organizationSlug,
     };
@@ -88,6 +90,7 @@ function toSafeUser(user: StoredUser): SafeUser {
     id: user.id,
     fullName: user.fullName,
     email: user.email,
+    registeredParentEmail: user.registeredParentEmail ?? undefined,
     role: user.role,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),

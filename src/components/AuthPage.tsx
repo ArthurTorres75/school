@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -43,6 +43,18 @@ interface OrganizationsResponse {
   data: PublicOrganizationItem[];
 }
 
+interface RegisterStudentOption {
+  email: string;
+  label: string;
+}
+
+interface RegisterOptionsResponse {
+  success: boolean;
+  data: {
+    students: RegisterStudentOption[];
+  };
+}
+
 interface AuthPageProps {
   initialMode?: AuthMode;
 }
@@ -63,6 +75,7 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
+  const [studentSearch, setStudentSearch] = useState("");
 
   const loginForm = useForm<LoginFormInput, undefined, LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -71,8 +84,32 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
 
   const registerForm = useForm<RegisterUserFormInput, undefined, RegisterUserInput>({
     resolver: zodResolver(registerUserSchema),
-    defaultValues: { fullName: "", email: "", password: "", role: "student", organizationSlug: "" },
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      role: "student",
+      organizationSlug: "",
+      parentEmail: "",
+      representedStudentEmail: "",
+    },
   });
+  const registerRole = useWatch({
+    control: registerForm.control,
+    name: "role",
+  });
+  const watchedOrganizationSlug = useWatch({
+    control: registerForm.control,
+    name: "organizationSlug",
+  });
+  const registerOrganizationSlug =
+    typeof watchedOrganizationSlug === "string" ? watchedOrganizationSlug : "";
+  const watchedRepresentedStudentEmail = useWatch({
+    control: registerForm.control,
+    name: "representedStudentEmail",
+  });
+  const representedStudentEmail =
+    typeof watchedRepresentedStudentEmail === "string" ? watchedRepresentedStudentEmail : "";
 
   const { data: currentUser } = useQuery({
     queryKey: ["auth:me"],
@@ -96,6 +133,29 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   });
 
   const organizations = organizationsData?.data ?? [];
+
+  const { data: registerOptionsData } = useQuery({
+    queryKey: ["auth:register-options", registerOrganizationSlug, studentSearch],
+    queryFn: async () => {
+      const params = new URLSearchParams({ organizationSlug: registerOrganizationSlug });
+      const normalizedSearch = studentSearch.trim();
+
+      if (normalizedSearch.length > 0) {
+        params.set("q", normalizedSearch);
+      }
+
+      const res = await fetch(`/api/auth/register-options?${params.toString()}`);
+      if (!res.ok) {
+        return { success: false, data: { students: [] } } as RegisterOptionsResponse;
+      }
+      return res.json() as Promise<RegisterOptionsResponse>;
+    },
+    enabled: mode === "register" && registerRole === "parent" && Boolean(registerOrganizationSlug),
+    staleTime: 60 * 1000,
+  });
+
+  const registerStudents = registerOptionsData?.data.students ?? [];
+  const filteredRegisterStudents = registerStudents;
 
   const loginMutation = useMutation({
     mutationFn: async (input: LoginInput) => {
@@ -368,11 +428,58 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                   )}
                 </div>
 
+                {registerRole === "parent" && (
+                  <div>
+                    <label className="block text-sm font-medium text-foreground">{copy.studentSearchLabel}</label>
+                    <input
+                      value={studentSearch}
+                      onChange={(event) => setStudentSearch(event.target.value)}
+                      type="text"
+                      className={INPUT_CLASS}
+                      placeholder={copy.studentSearchPlaceholder}
+                      aria-label={copy.studentSearchLabel}
+                    />
+
+                    <label className="mt-3 block text-sm font-medium text-foreground">{copy.studentRepresentativeEmail}</label>
+                    <input
+                      type="hidden"
+                      {...registerForm.register("representedStudentEmail")}
+                    />
+
+                    <select
+                      value={representedStudentEmail}
+                      onChange={(event) => registerForm.setValue("representedStudentEmail", event.target.value, { shouldValidate: true })}
+                      className={SELECT_CLASS}
+                      aria-label={copy.studentRepresentativeEmail}
+                    >
+                      <option value="">{copy.studentSelectPlaceholder}</option>
+                      {filteredRegisterStudents.map((student) => (
+                        <option key={student.email} value={student.email}>
+                          {student.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    {registerOrganizationSlug && filteredRegisterStudents.length === 0 && (
+                      <p className="mt-1 text-xs text-muted-foreground">{copy.noStudentsFound}</p>
+                    )}
+                    <p className="mt-1 text-xs text-muted-foreground">{copy.studentRepresentativeEmailHint}</p>
+                    {registerForm.formState.errors.representedStudentEmail && (
+                      <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.representedStudentEmail.message}</p>
+                    )}
+                  </div>
+                )}
+
                 {organizations.length > 0 && (
                   <div>
                     <label className="block text-sm font-medium text-foreground">{copy.organization}</label>
                     <select
-                      {...registerForm.register("organizationSlug")}
+                      {...registerForm.register("organizationSlug", {
+                        onChange: () => {
+                          setStudentSearch("");
+                          registerForm.setValue("representedStudentEmail", "");
+                        },
+                      })}
                       className={SELECT_CLASS}
                       aria-label={copy.organization}
                     >

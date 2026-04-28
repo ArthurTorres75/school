@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 
+import { AuthError } from "@/modules/users/user.errors";
+import { AUTH_ERROR_CODE } from "@/modules/users/user.constants";
 import type { CreateUserInput, StoredUser } from "@/modules/users/user.types";
 
 const DEFAULT_ORGANIZATION_SLUG = "default-school";
@@ -25,6 +27,7 @@ export class PrismaUserRepository implements UserRepository {
       id: user.id,
       fullName: user.fullName,
       email: user.email,
+      registeredParentEmail: user.registeredParentEmail,
       role: user.role,
       passwordHash: user.passwordHash,
       createdAt: user.createdAt,
@@ -39,6 +42,7 @@ export class PrismaUserRepository implements UserRepository {
         data: {
           fullName: input.fullName,
           email: input.email,
+          registeredParentEmail: input.parentEmail ?? null,
           role: input.role,
           passwordHash,
           organizationId: organization.id,
@@ -65,12 +69,53 @@ export class PrismaUserRepository implements UserRepository {
       }
 
       if (input.role === "parent") {
-        await transaction.parent.create({
+        const parentProfile = await transaction.parent.create({
           data: {
             userId: createdUser.id,
             organizationId: organization.id,
           },
         });
+
+        if (input.representedStudentEmail) {
+          const studentProfile = await transaction.student.findFirst({
+            where: {
+              organizationId: organization.id,
+              user: {
+                email: input.representedStudentEmail,
+                role: "student",
+              },
+            },
+            select: { id: true, userId: true, user: { select: { registeredParentEmail: true } } },
+          });
+
+          if (!studentProfile) {
+            throw new AuthError(
+              AUTH_ERROR_CODE.VALIDATION_ERROR,
+              "No se encontro un estudiante con ese email en la institucion seleccionada.",
+            );
+          }
+
+          await transaction.parentStudent.upsert({
+            where: {
+              studentId_parentId: {
+                studentId: studentProfile.id,
+                parentId: parentProfile.id,
+              },
+            },
+            update: {},
+            create: {
+              studentId: studentProfile.id,
+              parentId: parentProfile.id,
+            },
+          });
+
+          if (!studentProfile.user.registeredParentEmail) {
+            await transaction.user.update({
+              where: { id: studentProfile.userId },
+              data: { registeredParentEmail: createdUser.email },
+            });
+          }
+        }
       }
 
       return createdUser;
@@ -80,6 +125,7 @@ export class PrismaUserRepository implements UserRepository {
       id: user.id,
       fullName: user.fullName,
       email: user.email,
+      registeredParentEmail: user.registeredParentEmail,
       role: user.role,
       passwordHash: user.passwordHash,
       createdAt: user.createdAt,

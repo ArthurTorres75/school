@@ -43,7 +43,7 @@ export function RootPageContent() {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Link href={`#${SECTION_ID.START}`}>{copy.finalPrimaryCta}</Link>
+                <Link href="/auth">{copy.finalPrimaryCta}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
@@ -137,7 +137,7 @@ export function RootPageContent() {
 
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Button asChild size="lg">
-            <Link href="/inscripciones">{copy.finalPrimaryCta}</Link>
+            <Link href="/auth">{copy.finalPrimaryCta}</Link>
           </Button>
           <Button asChild size="lg" variant="outline">
             <Link href="/dashboard">{copy.finalSecondaryCta}</Link>
