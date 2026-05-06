@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local AI rules and skills
+.atl/
+.agent/
+.cursor/
+.claude/
+.roo/
+AGENTS.md
+copilot-instructions.md
+.github/copilot-instructions.md

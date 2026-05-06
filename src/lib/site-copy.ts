@@ -104,6 +104,24 @@ interface PrivatePageCopy {
 }
 
 interface DashboardPageCopy extends PrivatePageCopy {
+  visualBadge: string;
+  quickActionsTitle: string;
+  quickActionsSubtitle: string;
+  sessionStatusTitle: string;
+  sessionStatusActive: string;
+  sessionEmailLabel: string;
+  sessionRoleLabel: string;
+  nextStepTitle: string;
+  nextStepHint: string;
+  kpiActionsLabel: string;
+  kpiEnrollmentLabel: string;
+  kpiModulesLabel: string;
+  kpiRoleLabel: string;
+  roleNameAdmin: string;
+  roleNameParent: string;
+  roleNameTeacher: string;
+  roleNameStudent: string;
+  roleNameUnknown: string;
   roleActionsTitle: string;
   roleActionsSubtitle: string;
   roleActionsEmpty: string;
@@ -292,6 +310,24 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
       title: "Dashboard",
       subtitle: "Centro de operaciones para usuarios autenticados.",
       detail: "Desde acá se distribuyen los accesos principales del sistema según el rol activo.",
+      visualBadge: "Vista operativa",
+      quickActionsTitle: "Atajos de operación",
+      quickActionsSubtitle: "Entrá rápido a los módulos clave según tu perfil activo.",
+      sessionStatusTitle: "Estado de sesión",
+      sessionStatusActive: "Activa",
+      sessionEmailLabel: "Cuenta",
+      sessionRoleLabel: "Rol",
+      nextStepTitle: "Siguiente paso recomendado",
+      nextStepHint: "Usá un acceso directo para continuar tu flujo principal de hoy.",
+      kpiActionsLabel: "Acciones habilitadas",
+      kpiEnrollmentLabel: "Inscripción",
+      kpiModulesLabel: "Módulos visibles",
+      kpiRoleLabel: "Perfil activo",
+      roleNameAdmin: "Administrador",
+      roleNameParent: "Representante",
+      roleNameTeacher: "Docente",
+      roleNameStudent: "Estudiante",
+      roleNameUnknown: "Sin rol",
       inscriptionCtaLabel: "Ir a inscribir estudiante",
       inscriptionCtaHint: "Disponible para administradores y representantes.",
       roleActionsTitle: "Acciones disponibles según tu rol",
@@ -489,6 +525,24 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
       title: "Dashboard",
       subtitle: "Operations center for authenticated users.",
       detail: "From here we can route the main system access points by active role.",
+      visualBadge: "Operational view",
+      quickActionsTitle: "Operational shortcuts",
+      quickActionsSubtitle: "Jump into key modules quickly based on your active profile.",
+      sessionStatusTitle: "Session status",
+      sessionStatusActive: "Active",
+      sessionEmailLabel: "Account",
+      sessionRoleLabel: "Role",
+      nextStepTitle: "Recommended next step",
+      nextStepHint: "Use a direct access card to continue your main workflow today.",
+      kpiActionsLabel: "Enabled actions",
+      kpiEnrollmentLabel: "Enrollment",
+      kpiModulesLabel: "Visible modules",
+      kpiRoleLabel: "Active profile",
+      roleNameAdmin: "Administrator",
+      roleNameParent: "Guardian",
+      roleNameTeacher: "Teacher",
+      roleNameStudent: "Student",
+      roleNameUnknown: "No role",
       inscriptionCtaLabel: "Go to student enrollment",
       inscriptionCtaHint: "Available for admins and guardians.",
       roleActionsTitle: "Available actions for your role",
