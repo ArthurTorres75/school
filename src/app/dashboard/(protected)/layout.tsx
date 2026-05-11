@@ -19,7 +19,7 @@ export default async function ProtectedDashboardLayout({ children }: ProtectedDa
 
   return (
     <LanguageProvider language={DEFAULT_LANGUAGE}>
-      <main className="min-h-screen bg-linear-to-b from-background via-secondary/30 to-accent/16 px-4 py-6 text-foreground sm:px-6 sm:py-8">
+      <main className="min-h-screen bg-linear-to-b from-background via-secondary/30 to-accent/18 px-4 py-6 text-foreground sm:px-6 sm:py-8">
         <div className="mx-auto w-full max-w-5xl space-y-6">
           <PrivateDashboardHeader />
           {children}

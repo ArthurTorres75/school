@@ -10,8 +10,9 @@
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-heading);
   --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -131,6 +132,13 @@
   html {
     @apply scroll-smooth font-sans;
   }
+  h1, h2, h3 {
+    font-family: var(--font-heading), var(--font-sans);
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  :where(table, .tabular-nums) {
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 @keyframes fade-in-up {
@@ -195,6 +203,18 @@
 
   100% {
     transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes card-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -312,6 +332,10 @@
 
   .animate-fade-in-up {
     animation: fade-in-up 620ms ease-out both;
+  }
+
+  .animate-card-scale-in {
+    animation: card-scale-in 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
 }
 

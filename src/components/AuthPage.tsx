@@ -2,23 +2,19 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { TopControlsHeader } from "@/components/shared/TopControlsHeader";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { UI_COPY } from "@/lib/ui-copy";
-import {
-  loginSchema,
-  registerUserSchema,
-  type LoginFormInput,
-  type LoginInput,
-  type RegisterUserFormInput,
-  type RegisterUserInput,
-} from "@/modules/auth/auth.schema";
+import { getAuthSchemas, type LoginFormInput, type LoginInput, type RegisterUserFormInput, type RegisterUserInput } from "@/modules/users/user.schemas.i18n";
 import type { PublicOrganizationItem } from "@/modules/organizations/organization.types";
+import { cn } from "@/lib/utils";
 
 type AuthMode = "login" | "register";
 
@@ -59,13 +55,12 @@ interface AuthPageProps {
   initialMode?: AuthMode;
 }
 
-const INPUT_CLASS =
-  "mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const FIELD_CLASS = "mt-1";
 
 const SELECT_CLASS =
-  "mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  "mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
-const ERROR_TEXT_CLASS = "mt-1 text-xs text-destructive";
+const ERROR_TEXT_CLASS = "mt-1.5 text-xs text-destructive";
 
 export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const router = useRouter();
@@ -76,6 +71,9 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
   const [studentSearch, setStudentSearch] = useState("");
+
+  // Get schemas based on current language
+  const { loginSchema, registerUserSchema } = useMemo(() => getAuthSchemas(language), [language]);
 
   const loginForm = useForm<LoginFormInput, undefined, LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -230,76 +228,78 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
 
   if (currentUser?.data) {
     return (
-      <div className="min-h-screen bg-linear-to-b from-background via-secondary/30 to-accent/16 px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mx-auto w-full max-w-5xl space-y-6">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-background via-secondary/30 to-accent/18 px-4 py-6 sm:px-6 sm:py-8">
+        <div className="w-full max-w-md space-y-6">
           <TopControlsHeader brandLabel="School" />
-
-          <div className="flex justify-center">
-            <div className="w-full max-w-md space-y-6 rounded-3xl border border-primary/15 bg-card/95 p-6 shadow-xl shadow-primary/10">
-              <div className="space-y-2">
-                <h1 className="text-2xl font-semibold text-foreground">Sesion activa</h1>
-                <p className="text-sm text-muted-foreground">Estas autenticado como:</p>
-              </div>
-
-              <div className="space-y-3 rounded-2xl border border-secondary/30 bg-secondary/30 p-4">
-                <p className="text-sm text-foreground">
-                  <span className="font-semibold">Nombre:</span> {currentUser.data.fullName}
-                </p>
-                <p className="text-sm text-foreground">
-                  <span className="font-semibold">Email:</span> {currentUser.data.email}
-                </p>
-                <p className="text-sm text-foreground">
-                  <span className="font-semibold">Rol:</span>{" "}
-                  <span className="inline-block rounded-full border border-primary/20 bg-primary/10 px-2 py-1 text-xs font-semibold uppercase text-primary">
-                    {currentUser.data.role}
-                  </span>
-                </p>
-              </div>
-
-              <div className="flex gap-2">
-                <Button onClick={() => router.push("/dashboard")} className="flex-1" aria-label="Ir al dashboard">
-                  Dashboard
-                </Button>
-                <Button onClick={handleLogout} variant="outline" className="flex-1" aria-label="Cerrar sesion">
-                  Cerrar sesion
-                </Button>
-              </div>
-
-              <Link href="/" className="block text-center text-sm text-muted-foreground hover:text-foreground">
-                Ir al inicio
-              </Link>
-
-              <div className="space-y-3 border-t border-border pt-4">
-                <p className="text-sm font-semibold text-foreground">Probar endpoint protegido:</p>
-                <div className="space-y-2">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={async () => {
-                      const res = await fetch("/api/admin/health");
-                      const data = await res.json();
-                      setMessage(`${res.status}: ${JSON.stringify(data.data || data.message)}`);
-                      setMessageType(res.ok ? "success" : "error");
-                    }}
-                    aria-label="Probar API admin"
-                  >
-                    GET /api/admin/health
-                  </Button>
-                </div>
-              </div>
-
-              {message && (
-                <div
-                  className={`rounded p-3 text-sm ${
-                    messageType === "success"
-                      ? "border border-border bg-secondary text-secondary-foreground"
-                      : "border border-destructive/30 bg-destructive/10 text-destructive"
-                  }`}
-                >
-                  {message}
-                </div>
-              )}
+          
+          <div className="space-y-6 rounded-2xl border border-border bg-card p-8 shadow-lg shadow-black/5 animate-card-scale-in">
+            <div className="space-y-1">
+              <h1 className="font-heading text-2xl font-semibold tracking-tight">Sesión activa</h1>
+              <p className="text-sm text-muted-foreground">Estás autenticado como:</p>
             </div>
+
+            <div className="space-y-2.5 rounded-xl border border-border bg-muted/30 p-4">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="w-16 shrink-0 text-muted-foreground">Nombre</span>
+                <span className="font-medium text-foreground">{currentUser.data.fullName}</span>
+              </div>
+              <div className="h-px bg-border" />
+              <div className="flex items-center gap-2 text-sm">
+                <span className="w-16 shrink-0 text-muted-foreground">Email</span>
+                <span className="font-medium text-foreground">{currentUser.data.email}</span>
+              </div>
+              <div className="h-px bg-border" />
+              <div className="flex items-center gap-2 text-sm">
+                <span className="w-16 shrink-0 text-muted-foreground">Rol</span>
+                <span className="inline-flex items-center rounded-full border border-primary/25 bg-primary/10 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-primary">
+                  {currentUser.data.role}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button onClick={() => router.push("/dashboard")} className="flex-1" aria-label="Ir al dashboard">
+                Dashboard
+              </Button>
+              <Button onClick={handleLogout} variant="outline" className="flex-1" aria-label="Cerrar sesión">
+                Cerrar sesión
+              </Button>
+            </div>
+
+            <Link href="/" className="block text-center text-sm text-muted-foreground transition-colors hover:text-foreground">
+              Volver al inicio
+            </Link>
+
+            <div className="space-y-3 border-t border-border pt-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Probar endpoint protegido</p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full font-mono text-xs"
+                onClick={async () => {
+                  const res = await fetch("/api/admin/health");
+                  const data = await res.json();
+                  setMessage(`${res.status}: ${JSON.stringify(data.data || data.message)}`);
+                  setMessageType(res.ok ? "success" : "error");
+                }}
+                aria-label="Probar API admin"
+              >
+                GET /api/admin/health
+              </Button>
+            </div>
+
+            {message && (
+              <div
+                className={cn(
+                  "rounded-lg border px-4 py-3 text-sm",
+                  messageType === "success"
+                    ? "border-border bg-secondary/50 text-secondary-foreground"
+                    : "border-destructive/30 bg-destructive/8 text-destructive",
+                )}
+              >
+                {message}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -307,148 +307,165 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-background via-secondary/30 to-accent/16 px-4 py-6 sm:px-6 sm:py-8">
-      <div className="mx-auto w-full max-w-5xl space-y-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-background via-secondary/30 to-accent/18 px-4 py-6 sm:px-6 sm:py-8">
+      <div className="w-full max-w-md space-y-6">
         <TopControlsHeader brandLabel="School" />
 
-        <div className="flex justify-center">
-          <div className="w-full max-w-md space-y-6 rounded-3xl border border-primary/15 bg-card/95 p-6 shadow-xl shadow-primary/10">
-            <div className="space-y-2">
-              <h1 className="text-2xl font-semibold text-foreground">
-                {mode === "login" ? copy.loginTitle : copy.registerTitle}
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                {mode === "login" ? copy.loginSubtitle : copy.registerSubtitle}
-              </p>
-            </div>
+        <div className="space-y-6 rounded-2xl border border-border bg-card p-8 shadow-lg shadow-black/5 animate-card-scale-in">
+          {/* Header */}
+          <div className="space-y-1">
+            <h1 className="font-heading text-2xl font-semibold tracking-tight">
+              {mode === "login" ? copy.loginTitle : copy.registerTitle}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {mode === "login" ? copy.loginSubtitle : copy.registerSubtitle}
+            </p>
+          </div>
 
-            {mode === "login" ? (
-              <form
-                onSubmit={loginForm.handleSubmit((data) => loginMutation.mutate(data))}
-                className="space-y-4"
+          {/* Forms */}
+          {mode === "login" ? (
+            <form
+              onSubmit={loginForm.handleSubmit((data) => loginMutation.mutate(data))}
+              className="space-y-4"
+            >
+              <div className="space-y-1.5">
+                <Label htmlFor="login-email">{copy.email}</Label>
+                <Input
+                  id="login-email"
+                  {...loginForm.register("email")}
+                  type="email"
+                  className={FIELD_CLASS}
+                  placeholder="usuario@example.com"
+                  aria-label={copy.email}
+                  aria-invalid={!!loginForm.formState.errors.email}
+                />
+                {loginForm.formState.errors.email && (
+                  <p className={ERROR_TEXT_CLASS} role="alert">{loginForm.formState.errors.email.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="login-password">{copy.password}</Label>
+                <Input
+                  id="login-password"
+                  {...loginForm.register("password")}
+                  type="password"
+                  className={FIELD_CLASS}
+                  placeholder="••••••••"
+                  aria-label={copy.password}
+                  aria-invalid={!!loginForm.formState.errors.password}
+                />
+                {loginForm.formState.errors.password && (
+                  <p className={ERROR_TEXT_CLASS} role="alert">{loginForm.formState.errors.password.message}</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loginMutation.isPending}
+                className="w-full"
+                aria-label={copy.loginAction}
               >
-                <div>
-                  <label className="block text-sm font-medium text-foreground">{copy.email}</label>
-                  <input
-                    {...loginForm.register("email")}
-                    type="email"
-                    className={INPUT_CLASS}
-                    placeholder="usuario@example.com"
-                    aria-label={copy.email}
-                  />
-                  {loginForm.formState.errors.email && (
-                    <p className={ERROR_TEXT_CLASS}>{loginForm.formState.errors.email.message}</p>
-                  )}
-                </div>
+                {loginMutation.isPending ? copy.loading : copy.loginAction}
+              </Button>
+            </form>
+          ) : (
+            <form
+              onSubmit={registerForm.handleSubmit((data) => registerMutation.mutate(data))}
+              className="space-y-4"
+            >
+              <div className="space-y-1.5">
+                <Label htmlFor="reg-fullName">{copy.fullName}</Label>
+                <Input
+                  id="reg-fullName"
+                  {...registerForm.register("fullName")}
+                  type="text"
+                  className={FIELD_CLASS}
+                  placeholder="Juan Pérez"
+                  aria-label={copy.fullName}
+                  aria-invalid={!!registerForm.formState.errors.fullName}
+                />
+                {registerForm.formState.errors.fullName && (
+                  <p className={ERROR_TEXT_CLASS} role="alert">{registerForm.formState.errors.fullName.message}</p>
+                )}
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground">{copy.password}</label>
-                  <input
-                    {...loginForm.register("password")}
-                    type="password"
-                    className={INPUT_CLASS}
-                    placeholder="••••••••"
-                    aria-label={copy.password}
-                  />
-                  {loginForm.formState.errors.password && (
-                    <p className={ERROR_TEXT_CLASS}>{loginForm.formState.errors.password.message}</p>
-                  )}
-                </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="reg-email">{copy.email}</Label>
+                <Input
+                  id="reg-email"
+                  {...registerForm.register("email")}
+                  type="email"
+                  className={FIELD_CLASS}
+                  placeholder="usuario@example.com"
+                  aria-label={copy.email}
+                  aria-invalid={!!registerForm.formState.errors.email}
+                />
+                {registerForm.formState.errors.email && (
+                  <p className={ERROR_TEXT_CLASS} role="alert">{registerForm.formState.errors.email.message}</p>
+                )}
+              </div>
 
-                <Button
-                  type="submit"
-                  disabled={loginMutation.isPending}
-                  className="w-full"
-                  aria-label={copy.loginAction}
+              <div className="space-y-1.5">
+                <Label htmlFor="reg-password">{copy.password}</Label>
+                <Input
+                  id="reg-password"
+                  {...registerForm.register("password")}
+                  type="password"
+                  className={FIELD_CLASS}
+                  placeholder="••••••••"
+                  aria-label={copy.password}
+                  aria-invalid={!!registerForm.formState.errors.password}
+                />
+                {copy.passwordHint && (
+                  <p className="text-xs text-muted-foreground">{copy.passwordHint}</p>
+                )}
+                {registerForm.formState.errors.password && (
+                  <p className={ERROR_TEXT_CLASS} role="alert">{registerForm.formState.errors.password.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="reg-role">{copy.role}</Label>
+                <select
+                  id="reg-role"
+                  {...registerForm.register("role")}
+                  className={SELECT_CLASS}
+                  aria-label={copy.role}
                 >
-                  {loginMutation.isPending ? copy.loading : copy.loginAction}
-                </Button>
-              </form>
-            ) : (
-              <form
-                onSubmit={registerForm.handleSubmit((data) => registerMutation.mutate(data))}
-                className="space-y-4"
-              >
-                <div>
-                  <label className="block text-sm font-medium text-foreground">{copy.fullName}</label>
-                  <input
-                    {...registerForm.register("fullName")}
-                    type="text"
-                    className={INPUT_CLASS}
-                    placeholder="Juan Perez"
-                    aria-label={copy.fullName}
-                  />
-                  {registerForm.formState.errors.fullName && (
-                    <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.fullName.message}</p>
-                  )}
-                </div>
+                  <option value="student">{copy.roleStudent}</option>
+                  <option value="teacher">{copy.roleTeacher}</option>
+                  <option value="parent">{copy.roleParent}</option>
+                </select>
+                {registerForm.formState.errors.role && (
+                  <p className={ERROR_TEXT_CLASS} role="alert">{registerForm.formState.errors.role.message}</p>
+                )}
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground">{copy.email}</label>
-                  <input
-                    {...registerForm.register("email")}
-                    type="email"
-                    className={INPUT_CLASS}
-                    placeholder="usuario@example.com"
-                    aria-label={copy.email}
-                  />
-                  {registerForm.formState.errors.email && (
-                    <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.email.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground">{copy.password}</label>
-                  <input
-                    {...registerForm.register("password")}
-                    type="password"
-                    className={INPUT_CLASS}
-                    placeholder="••••••••"
-                    aria-label={copy.password}
-                  />
-                  <p className="mt-1 text-xs text-muted-foreground">{copy.passwordHint}</p>
-                  {registerForm.formState.errors.password && (
-                    <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.password.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground">{copy.role}</label>
-                  <select
-                    {...registerForm.register("role")}
-                    className={SELECT_CLASS}
-                    aria-label={copy.role}
-                  >
-                    <option value="student">{copy.roleStudent}</option>
-                    <option value="teacher">{copy.roleTeacher}</option>
-                    <option value="parent">{copy.roleParent}</option>
-                  </select>
-                  {registerForm.formState.errors.role && (
-                    <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.role.message}</p>
-                  )}
-                </div>
-
-                {registerRole === "parent" && (
-                  <div>
-                    <label className="block text-sm font-medium text-foreground">{copy.studentSearchLabel}</label>
-                    <input
+              {registerRole === "parent" && (
+                <div className="space-y-3 rounded-xl border border-border bg-muted/20 p-4">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="reg-student-search">{copy.studentSearchLabel}</Label>
+                    <Input
+                      id="reg-student-search"
                       value={studentSearch}
                       onChange={(event) => setStudentSearch(event.target.value)}
                       type="text"
-                      className={INPUT_CLASS}
+                      className={FIELD_CLASS}
                       placeholder={copy.studentSearchPlaceholder}
                       aria-label={copy.studentSearchLabel}
                     />
+                  </div>
 
-                    <label className="mt-3 block text-sm font-medium text-foreground">{copy.studentRepresentativeEmail}</label>
-                    <input
-                      type="hidden"
-                      {...registerForm.register("representedStudentEmail")}
-                    />
-
+                  <div className="space-y-1.5">
+                    <Label htmlFor="reg-student-select">{copy.studentRepresentativeEmail}</Label>
+                    <input type="hidden" {...registerForm.register("representedStudentEmail")} />
                     <select
+                      id="reg-student-select"
                       value={representedStudentEmail}
-                      onChange={(event) => registerForm.setValue("representedStudentEmail", event.target.value, { shouldValidate: true })}
+                      onChange={(event) =>
+                        registerForm.setValue("representedStudentEmail", event.target.value, { shouldValidate: true })
+                      }
                       className={SELECT_CLASS}
                       aria-label={copy.studentRepresentativeEmail}
                     >
@@ -459,75 +476,87 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
                         </option>
                       ))}
                     </select>
-
                     {registerOrganizationSlug && filteredRegisterStudents.length === 0 && (
-                      <p className="mt-1 text-xs text-muted-foreground">{copy.noStudentsFound}</p>
+                      <p className="text-xs text-muted-foreground">{copy.noStudentsFound}</p>
                     )}
-                    <p className="mt-1 text-xs text-muted-foreground">{copy.studentRepresentativeEmailHint}</p>
+                    <p className="text-xs text-muted-foreground">{copy.studentRepresentativeEmailHint}</p>
                     {registerForm.formState.errors.representedStudentEmail && (
-                      <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.representedStudentEmail.message}</p>
+                      <p className={ERROR_TEXT_CLASS} role="alert">
+                        {registerForm.formState.errors.representedStudentEmail.message}
+                      </p>
                     )}
                   </div>
-                )}
+                </div>
+              )}
 
-                {organizations.length > 0 && (
-                  <div>
-                    <label className="block text-sm font-medium text-foreground">{copy.organization}</label>
-                    <select
-                      {...registerForm.register("organizationSlug", {
-                        onChange: () => {
-                          setStudentSearch("");
-                          registerForm.setValue("representedStudentEmail", "");
-                        },
-                      })}
-                      className={SELECT_CLASS}
-                      aria-label={copy.organization}
-                    >
-                      <option value="">{copy.organizationPlaceholder}</option>
-                      {organizations.map((org) => (
-                        <option key={org.slug} value={org.slug}>
-                          {org.name}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="mt-1 text-xs text-muted-foreground">{copy.organizationHint}</p>
-                    {registerForm.formState.errors.organizationSlug && (
-                      <p className={ERROR_TEXT_CLASS}>{registerForm.formState.errors.organizationSlug.message}</p>
-                    )}
-                  </div>
-                )}
+              {organizations.length > 0 && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="reg-org">{copy.organization}</Label>
+                  <select
+                    id="reg-org"
+                    {...registerForm.register("organizationSlug", {
+                      onChange: () => {
+                        setStudentSearch("");
+                        registerForm.setValue("representedStudentEmail", "");
+                      },
+                    })}
+                    className={SELECT_CLASS}
+                    aria-label={copy.organization}
+                  >
+                    <option value="">{copy.organizationPlaceholder}</option>
+                    {organizations.map((org) => (
+                      <option key={org.slug} value={org.slug}>
+                        {org.name}
+                      </option>
+                    ))}
+                  </select>
+                  {copy.organizationHint && (
+                    <p className="text-xs text-muted-foreground">{copy.organizationHint}</p>
+                  )}
+                  {registerForm.formState.errors.organizationSlug && (
+                    <p className={ERROR_TEXT_CLASS} role="alert">
+                      {registerForm.formState.errors.organizationSlug.message}
+                    </p>
+                  )}
+                </div>
+              )}
 
-                <Button
-                  type="submit"
-                  disabled={registerMutation.isPending}
-                  className="w-full"
-                  aria-label={copy.registerAction}
-                >
-                  {registerMutation.isPending ? copy.loading : copy.registerAction}
-                </Button>
-              </form>
-            )}
-
-            {message && (
-              <div
-                className={`rounded p-3 text-sm ${
-                  messageType === "success"
-                    ? "border border-border bg-secondary text-secondary-foreground"
-                    : "border border-destructive/30 bg-destructive/10 text-destructive"
-                }`}
+              <Button
+                type="submit"
+                disabled={registerMutation.isPending}
+                className="w-full"
+                aria-label={copy.registerAction}
               >
-                {message}
-              </div>
-            )}
+                {registerMutation.isPending ? copy.loading : copy.registerAction}
+              </Button>
+            </form>
+          )}
 
-            <button
-              onClick={() => switchMode(mode === "login" ? "register" : "login")}
-              className="w-full text-sm text-muted-foreground hover:text-foreground"
-              aria-label={mode === "login" ? copy.switchToRegister : copy.switchToLogin}
+          {/* Feedback message */}
+          {message && (
+            <div
+              role="status"
+              aria-live="polite"
+              className={cn(
+                "rounded-lg border px-4 py-3 text-sm",
+                messageType === "success"
+                  ? "border-border bg-secondary/50 text-secondary-foreground"
+                  : "border-destructive/30 bg-destructive/8 text-destructive",
+              )}
             >
-              {mode === "login" ? copy.switchToRegister : copy.switchToLogin}
-            </button>
-          </div>
+              {message}
+            </div>
+          )}
+
+          {/* Mode switcher */}
+          <Button
+            variant="ghost"
+            onClick={() => switchMode(mode === "login" ? "register" : "login")}
+            className="w-full text-sm text-muted-foreground"
+            aria-label={mode === "login" ? copy.switchToRegister : copy.switchToLogin}
+          >
+            {mode === "login" ? copy.switchToRegister : copy.switchToLogin}
+          </Button>
         </div>
       </div>
     </div>

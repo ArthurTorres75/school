@@ -8,16 +8,22 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 
 import { QueryClientProvider } from "@/providers/QueryClientProvider";
 
-const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
+const figtree = Figtree({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
   subsets: ["latin"],
+  variable: "--font-heading",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -51,14 +57,14 @@ export default function RootLayout({
       lang={DEFAULT_LANGUAGE}
       suppressHydrationWarning
       data-scroll-behavior="smooth"
-      className={cn("font-sans", figtree.variable)}
+      className={cn("font-sans antialiased", figtree.variable, geistSans.variable, geistMono.variable)}
     >
       <head suppressHydrationWarning>
         <ThemeScript />
       </head>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
         <ThemeProvider>
           <QueryClientProvider>{children}</QueryClientProvider>

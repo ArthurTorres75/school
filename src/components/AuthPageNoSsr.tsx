@@ -16,7 +16,7 @@ const AuthPageClient = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex min-h-screen items-center justify-center bg-linear-to-b from-background via-secondary/30 to-accent/16 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-b from-background via-secondary/30 to-accent/18 px-4 py-6 sm:px-6 sm:py-8">
         <div className="w-full max-w-md rounded-3xl border border-primary/15 bg-card/95 p-6 text-sm text-muted-foreground shadow-xl shadow-primary/10">
           Cargando autenticación...
         </div>

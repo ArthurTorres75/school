@@ -1,8 +1,8 @@
 export {
-  loginSchema,
-  registerUserSchema,
+  getAuthSchemas,
   type LoginFormInput,
   type LoginInput,
   type RegisterUserFormInput,
   type RegisterUserInput,
-} from "@/modules/users/user.schemas";
+  VALIDATION_MESSAGES,
+} from "@/modules/users/user.schemas.i18n";
