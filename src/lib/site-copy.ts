@@ -48,6 +48,13 @@ interface LandingPageCopy {
   flowTitle: string;
   flowSubtitle: string;
   flowSteps: LandingFlowStepCopy[];
+  notebookEyebrow: string;
+  notebookTitle: string;
+  notebookSubtitle: string;
+  notebookFeatureOneTitle: string;
+  notebookFeatureOneDescription: string;
+  notebookFeatureTwoTitle: string;
+  notebookFeatureTwoDescription: string;
   finalCtaTitle: string;
   finalCtaSubtitle: string;
   finalPrimaryCta: string;
@@ -243,6 +250,16 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
           description: "El equipo interno gestiona académicos y administrativos desde un dashboard unificado con control de acceso.",
         },
       ],
+      notebookEyebrow: "Vista interactiva",
+      notebookTitle: "Un cuaderno 3D que se abre mientras hacés scroll",
+      notebookSubtitle:
+        "Integramos animación inmersiva para reforzar el relato institucional y mostrar innovación sin sacrificar claridad.",
+      notebookFeatureOneTitle: "Animación guiada por scroll",
+      notebookFeatureOneDescription:
+        "La apertura del cuaderno responde al avance de lectura para mantener una narrativa visual coherente.",
+      notebookFeatureTwoTitle: "Escena optimizada con Three.js",
+      notebookFeatureTwoDescription:
+        "Modelo liviano con luces y materiales equilibrados para funcionar fluido en desktop y mobile.",
       finalCtaTitle: "Listo para transformar la gestión de tu escuela",
       finalCtaSubtitle:
         "Implementá una experiencia digital profesional, escalable y centrada en resultados para familias, docentes y administración.",
@@ -458,6 +475,16 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
           description: "Internal teams manage academic and administrative work from a unified, permission-aware dashboard.",
         },
       ],
+      notebookEyebrow: "Interactive view",
+      notebookTitle: "A 3D notebook that opens as users scroll",
+      notebookSubtitle:
+        "We add immersive motion to strengthen the institutional narrative while preserving clarity and usability.",
+      notebookFeatureOneTitle: "Scroll-driven animation",
+      notebookFeatureOneDescription:
+        "The notebook opening is tied to reading progress to keep the visual story aligned with the content flow.",
+      notebookFeatureTwoTitle: "Optimized Three.js scene",
+      notebookFeatureTwoDescription:
+        "Lightweight model with balanced lights and materials for smooth performance on desktop and mobile.",
       finalCtaTitle: "Ready to transform your school management",
       finalCtaSubtitle:
         "Launch a professional, scalable digital experience centered on outcomes for families, teachers and administrators.",

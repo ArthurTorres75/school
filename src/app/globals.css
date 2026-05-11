@@ -159,7 +159,81 @@
   }
 }
 
+@keyframes gradient-sweep {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.08) translate3d(-1.5%, 1.5%, 0);
+    opacity: 0.75;
+  }
+
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 0.5;
+  }
+}
+
+@keyframes noise-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: translate3d(-2%, 1%, 0);
+  }
+
+  50% {
+    transform: translate3d(2%, -1%, 0);
+  }
+
+  75% {
+    transform: translate3d(1%, 2%, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @layer components {
+  .landing-animated-gradient {
+    position: absolute;
+    inset: -12%;
+    background-image:
+      radial-gradient(circle at 12% 18%, color-mix(in oklab, var(--primary) 24%, transparent), transparent 48%),
+      radial-gradient(circle at 78% 28%, color-mix(in oklab, var(--accent) 25%, transparent), transparent 42%),
+      radial-gradient(circle at 50% 82%, color-mix(in oklab, var(--secondary) 28%, transparent), transparent 52%);
+    filter: blur(28px);
+    opacity: 0.62;
+    animation: gradient-sweep 18s ease-in-out infinite;
+  }
+
+  .landing-noise-overlay {
+    position: absolute;
+    inset: -20%;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in oklab, var(--foreground) 6%, transparent) 0,
+        color-mix(in oklab, var(--foreground) 6%, transparent) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--background) 65%, transparent) 0,
+        color-mix(in oklab, var(--background) 65%, transparent) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+    opacity: 0.12;
+    mix-blend-mode: soft-light;
+    animation: noise-shift 1.2s steps(6) infinite;
+  }
+
   .landing-panel {
     position: relative;
     overflow: hidden;
@@ -209,7 +283,42 @@
     background-color: color-mix(in oklab, var(--card) 75%, var(--primary) 8%);
   }
 
+  .landing-mosaic-card {
+    transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease;
+  }
+
+  .landing-mosaic-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+    background-color: color-mix(in oklab, var(--card) 82%, var(--accent) 10%);
+  }
+
+  .notebook-scene-glow {
+    background-image: radial-gradient(
+      circle at 30% 20%,
+      color-mix(in oklab, var(--primary) 22%, transparent) 0%,
+      transparent 55%
+    );
+  }
+
+  .notebook-scene-sweep {
+    background-image: linear-gradient(
+      120deg,
+      transparent 0%,
+      color-mix(in oklab, var(--foreground) 6%, transparent) 38%,
+      transparent 78%
+    );
+  }
+
   .animate-fade-in-up {
     animation: fade-in-up 620ms ease-out both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-animated-gradient,
+  .landing-noise-overlay,
+  .landing-orb {
+    animation: none;
   }
 }
