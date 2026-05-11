@@ -31,14 +31,28 @@ export const VALIDATION_MESSAGES = {
   },
 } as const;
 
-function createNormalizedEmailSchema(messages: typeof VALIDATION_MESSAGES.es) {
+type ValidationMessages = {
+  emailInvalid: string;
+  passwordMinLength: string;
+  passwordMaxLength: string;
+  passwordRequiresUppercase: string;
+  passwordRequiresLowercase: string;
+  passwordRequiresNumber: string;
+  fullNameMinLength: string;
+  fullNameMaxLength: string;
+  parentEmailOnlyForStudents: string;
+  representedStudentOnlyForParents: string;
+  passwordRequired: string;
+};
+
+function createNormalizedEmailSchema(messages: ValidationMessages) {
   return z
     .string()
     .transform((value) => value.trim().toLowerCase())
     .pipe(z.email({ message: messages.emailInvalid }));
 }
 
-function createOptionalNormalizedEmailSchema(messages: typeof VALIDATION_MESSAGES.es) {
+function createOptionalNormalizedEmailSchema(messages: ValidationMessages) {
   return z.preprocess((value) => {
     if (typeof value !== "string") {
       return value;
@@ -60,7 +74,7 @@ function createOptionalOrganizationSlugSchema() {
   }, z.string().min(2).max(64).optional());
 }
 
-function createPasswordPolicySchema(messages: typeof VALIDATION_MESSAGES.es) {
+function createPasswordPolicySchema(messages: ValidationMessages) {
   return z
     .string()
     .min(8, { message: messages.passwordMinLength })
@@ -70,7 +84,7 @@ function createPasswordPolicySchema(messages: typeof VALIDATION_MESSAGES.es) {
     .regex(/[0-9]/, { message: messages.passwordRequiresNumber });
 }
 
-function createRegisterUserSchema(messages: typeof VALIDATION_MESSAGES.es) {
+function createRegisterUserSchema(messages: ValidationMessages) {
   const normalizedEmailSchema = createNormalizedEmailSchema(messages);
   const optionalNormalizedEmailSchema = createOptionalNormalizedEmailSchema(messages);
   const optionalOrganizationSlugSchema = createOptionalOrganizationSlugSchema();
@@ -111,7 +125,7 @@ function createRegisterUserSchema(messages: typeof VALIDATION_MESSAGES.es) {
     });
 }
 
-function createLoginSchema(messages: typeof VALIDATION_MESSAGES.es) {
+function createLoginSchema(messages: ValidationMessages) {
   const normalizedEmailSchema = createNormalizedEmailSchema(messages);
 
   return z.object({
@@ -121,7 +135,7 @@ function createLoginSchema(messages: typeof VALIDATION_MESSAGES.es) {
 }
 
 export function getAuthSchemas(language: Language) {
-  const messages = VALIDATION_MESSAGES[language];
+  const messages: ValidationMessages = VALIDATION_MESSAGES[language];
   return {
     registerUserSchema: createRegisterUserSchema(messages),
     loginSchema: createLoginSchema(messages),
