@@ -110,7 +110,7 @@ export function RootPageContent() {
   }, []);
 
   return (
-    <div ref={rootRef} className="relative flex flex-col gap-8 pb-16 sm:gap-12">
+    <div ref={rootRef} className="relative flex flex-col gap-8 pb-14 sm:gap-10">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="landing-animated-gradient" />
         <div className="landing-noise-overlay" />
@@ -120,9 +120,9 @@ export function RootPageContent() {
 
       <section
         data-reveal
-        className="landing-panel mx-auto flex w-full max-w-5xl flex-col gap-8 rounded-3xl border border-border bg-card px-6 py-12 shadow-sm shadow-primary/5 sm:px-12 sm:py-16"
+        className="landing-panel mx-auto flex w-full max-w-6xl flex-col gap-8 rounded-xl border border-border/90 bg-card px-6 py-10 shadow-sm sm:px-10 sm:py-12"
       >
-        <NavigationMenu className="w-full justify-center rounded-full border border-border bg-background/50 px-3 py-2 backdrop-blur-sm">
+        <NavigationMenu className="w-full justify-center rounded-lg border border-border bg-background/60 px-3 py-2 backdrop-blur-sm">
           <NavigationMenuList className="flex-wrap justify-center">
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
@@ -145,18 +145,18 @@ export function RootPageContent() {
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="flex flex-col gap-5">
             <header className="flex flex-col gap-4">
-              <p className="inline-flex w-fit rounded-full border border-primary/30 bg-primary/8 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary motion-safe:animate-fade-in-up">
+              <p className="inline-flex w-fit rounded-md border border-primary/30 bg-primary/8 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-primary motion-safe:animate-fade-in-up">
                 {copy.badge}
               </p>
-              <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl motion-safe:animate-fade-in-up motion-safe:[animation-delay:120ms]">
+              <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-[3.5rem] motion-safe:animate-fade-in-up motion-safe:[animation-delay:120ms]">
                 {copy.title}
               </h1>
-              <p className="max-w-3xl text-pretty text-base text-muted-foreground sm:text-lg motion-safe:animate-fade-in-up motion-safe:[animation-delay:220ms]">
+              <p className="max-w-3xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg motion-safe:animate-fade-in-up motion-safe:[animation-delay:220ms]">
                 {copy.subtitle}
               </p>
             </header>
 
-            <article className="rounded-lg border border-secondary/50 bg-secondary/20 p-5 text-sm text-secondary-foreground sm:p-6 sm:text-base motion-safe:animate-fade-in-up motion-safe:[animation-delay:420ms]">
+            <article className="rounded-lg border border-secondary/45 bg-secondary/35 p-5 text-sm leading-6 text-secondary-foreground sm:p-6 sm:text-base motion-safe:animate-fade-in-up motion-safe:[animation-delay:420ms]">
               {copy.heroDetail}
             </article>
 
@@ -173,11 +173,8 @@ export function RootPageContent() {
             </div>
           </div>
 
-          <div
-            id={SECTION_ID.NOTEBOOK}
-            className="rounded-2xl border border-border bg-background/60 p-4 sm:p-5"
-          >
-            <div className="h-64 overflow-hidden rounded-xl border border-border bg-background sm:h-72 lg:h-80">
+          <div id={SECTION_ID.NOTEBOOK} className="rounded-lg border border-border bg-background/70 p-4 sm:p-5">
+            <div className="h-64 overflow-hidden rounded-md border border-border bg-background sm:h-72 lg:h-80">
               <NotebookScene openProgress={0} />
             </div>
           </div>
@@ -185,8 +182,8 @@ export function RootPageContent() {
 
         <div className="grid gap-4 md:grid-cols-3 motion-safe:animate-fade-in-up motion-safe:[animation-delay:320ms]">
           {copy.stats.map((stat) => (
-            <article key={stat.label} className="rounded-md border border-border bg-card/50 p-4">
-              <p className="text-lg font-semibold tracking-tight text-primary">{stat.value}</p>
+            <article key={stat.label} className="rounded-lg border border-border bg-card/60 p-4">
+              <p className="tabular-nums text-lg font-semibold tracking-tight text-primary">{stat.value}</p>
               <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
             </article>
           ))}
@@ -195,7 +192,7 @@ export function RootPageContent() {
 
       <section
         data-reveal
-        className="mx-auto flex w-full max-w-5xl flex-col gap-6 rounded-3xl border border-border bg-card px-6 py-8 shadow-sm sm:px-12 sm:py-10"
+        className="mx-auto flex w-full max-w-6xl flex-col gap-6 rounded-xl border border-border/90 bg-card px-6 py-8 shadow-sm sm:px-10 sm:py-10"
       >
         <header className="flex flex-col gap-2">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary">{copy.offersEyebrow}</p>
@@ -213,7 +210,7 @@ export function RootPageContent() {
                 index === 4 && "sm:col-span-2",
               )}
             >
-              <p className="text-lg font-semibold tracking-tight text-primary">{tile.value}</p>
+              <p className="tabular-nums text-lg font-semibold tracking-tight text-primary">{tile.value}</p>
               <p className="mt-1 text-sm text-muted-foreground">{tile.label}</p>
             </article>
           ))}
@@ -223,7 +220,7 @@ export function RootPageContent() {
       <section
         id={SECTION_ID.OFFERS}
         data-reveal
-        className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-6 rounded-3xl border border-border bg-card px-6 py-12 shadow-sm sm:px-12 sm:py-16"
+        className="mx-auto flex w-full max-w-6xl scroll-mt-24 flex-col gap-6 rounded-xl border border-border/90 bg-card px-6 py-10 shadow-sm sm:px-10 sm:py-12"
       >
         <header className="flex flex-col gap-2">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary">{copy.offersEyebrow}</p>
@@ -235,9 +232,9 @@ export function RootPageContent() {
           {copy.offers.map((offer) => (
             <article
               key={offer.title}
-              className="landing-offer-card rounded-lg border border-border bg-background/40 p-5 transition-colors hover:bg-background/60"
+              className="landing-offer-card rounded-lg border border-border bg-background/45 p-5 transition-colors hover:bg-background/70"
             >
-              <p className="inline-flex w-fit rounded-md border border-primary/30 bg-primary/8 px-2.5 py-1 text-xs font-semibold text-primary">
+              <p className="inline-flex w-fit rounded-sm border border-primary/30 bg-primary/8 px-2.5 py-1 text-xs font-semibold text-primary">
                 {offer.tag}
               </p>
               <h3 className="mt-4 text-base font-semibold tracking-tight">{offer.title}</h3>
@@ -250,7 +247,7 @@ export function RootPageContent() {
       <section
         id={SECTION_ID.FLOW}
         data-reveal
-        className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-6 rounded-3xl border border-accent/40 bg-accent/8 px-6 py-12 sm:px-12 sm:py-16"
+        className="mx-auto flex w-full max-w-6xl scroll-mt-24 flex-col gap-6 rounded-xl border border-accent/40 bg-accent/12 px-6 py-10 sm:px-10 sm:py-12"
       >
         <header className="flex flex-col gap-2">
           <p className="text-xs font-semibold uppercase tracking-widest text-accent-foreground">{copy.flowEyebrow}</p>
@@ -260,7 +257,7 @@ export function RootPageContent() {
 
         <div className="grid gap-4 md:grid-cols-3">
           {copy.flowSteps.map((step, index) => (
-            <article key={step.title} className="rounded-lg border border-accent/30 bg-card p-5">
+            <article key={step.title} className="rounded-lg border border-accent/30 bg-card/98 p-5">
               <p className="text-xs font-semibold tracking-widest text-primary">0{index + 1}</p>
               <h3 className="mt-3 text-base font-semibold tracking-tight">{step.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
@@ -272,7 +269,7 @@ export function RootPageContent() {
       <section
         id={SECTION_ID.START}
         data-reveal
-        className="landing-panel mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-6 rounded-3xl border border-border bg-card px-6 py-12 text-center shadow-sm sm:px-12 sm:py-16"
+        className="landing-panel mx-auto flex w-full max-w-6xl scroll-mt-24 flex-col gap-6 rounded-xl border border-border/90 bg-card px-6 py-10 text-center shadow-sm sm:px-10 sm:py-12"
       >
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">{copy.finalCtaTitle}</h2>
         <p className="mx-auto max-w-2xl text-base text-muted-foreground">{copy.finalCtaSubtitle}</p>

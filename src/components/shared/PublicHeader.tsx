@@ -36,22 +36,25 @@ export function PublicHeader() {
   ];
 
   return (
-    <header className="rounded-3xl border border-primary/15 bg-card/85 px-4 py-4 shadow-lg shadow-primary/8 backdrop-blur sm:px-5">
+    <header className="rounded-xl border border-border/90 bg-card/95 px-4 py-3 shadow-sm backdrop-blur-sm sm:px-5">
       <div className="flex items-center justify-between gap-3">
-        <Button asChild variant="outline" className="rounded-full border-primary/20 bg-primary/8 text-primary hover:bg-primary/12">
-          <Link href="/">{copy.brandLabel}</Link>
-        </Button>
+        <Link
+          href="/"
+          className="inline-flex items-center rounded-md border border-primary/20 bg-primary/8 px-3 py-1.5 text-sm font-semibold tracking-tight text-primary transition-colors hover:bg-primary/12"
+        >
+          {copy.brandLabel}
+        </Link>
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeSwitcher />
-          <Button asChild variant="outline" size="sm" className="rounded-full border-primary/20 bg-primary/8 text-primary hover:bg-primary/12">
+          <Button asChild variant="outline" size="sm" className="rounded-md border-primary/20 bg-primary/8 text-primary hover:bg-primary/12">
             <Link href="/login">{uiCopy.auth.loginAction}</Link>
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="rounded-full md:hidden"
+            className="rounded-md md:hidden"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={isOpen}
@@ -65,7 +68,7 @@ export function PublicHeader() {
         aria-label="Navegación principal"
         className={cn("mt-3 w-full", isOpen ? "block" : "hidden md:block")}
       >
-        <NavigationMenuList className="w-full flex-col items-stretch gap-2 md:flex-row md:flex-wrap md:items-center">
+        <NavigationMenuList className="w-full flex-col items-stretch gap-2 md:flex-row md:flex-wrap md:items-center md:gap-1.5">
           {navigationItems.map((item) => {
             const isActive = pathname === item.href;
 
@@ -75,10 +78,10 @@ export function PublicHeader() {
                   asChild
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    "justify-start md:justify-center",
+                    "h-9 justify-start rounded-md border px-3 text-sm font-medium md:justify-center",
                     isActive
                       ? "border-primary/25 bg-primary/10 text-primary"
-                      : "border-border bg-background/70 text-muted-foreground hover:bg-secondary/40 hover:text-foreground",
+                      : "border-border/80 bg-background/75 text-muted-foreground hover:bg-secondary/55 hover:text-foreground",
                   )}
                 >
                   <Link href={item.href} onClick={() => setIsOpen(false)}>
