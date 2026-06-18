@@ -1,5 +1,6 @@
 import { DEFAULT_LANGUAGE } from "@/lib/i18n";
 import { SITE_COPY } from "@/lib/site-copy";
+import { InternalManagementContent } from "@/app/dashboard/(protected)/gestion-interna/_components/InternalManagementContent";
 
 export default function InternalManagementPage() {
   const copy = SITE_COPY[DEFAULT_LANGUAGE].management;
@@ -14,6 +15,8 @@ export default function InternalManagementPage() {
       <article className="rounded-2xl border border-accent/30 bg-accent/22 p-5">
         <p className="text-sm text-foreground sm:text-base">{copy.detail}</p>
       </article>
+
+      <InternalManagementContent />
     </section>
   );
 }
