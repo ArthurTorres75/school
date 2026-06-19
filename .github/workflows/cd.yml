@@ -70,7 +70,15 @@ jobs:
       - name: Pull Vercel environment
         run: vercel pull --yes --environment=${{ steps.target.outputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
 
+      # DATABASE_URL and JWT_SECRET are marked Sensitive in Vercel, so they are
+      # NOT downloaded by `vercel pull`. The build never connects to the DB, it
+      # only needs these to pass the zod validation in src/lib/env.ts. Vercel
+      # injects the REAL Sensitive values at runtime, where the app reads
+      # process.env, so these placeholders never reach production.
       - name: Build project artifacts
+        env:
+          DATABASE_URL: mongodb://ci:ci@localhost:27017/ci?authSource=admin
+          JWT_SECRET: ci-build-placeholder-secret-not-a-real-key-000
         run: vercel build ${{ steps.target.outputs.prod_flag }} --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Vercel
