@@ -1,0 +1,69 @@
+name: CI
+
+# Quality gate. This pipeline VALIDATES code — it does not deploy.
+# Deployment (preview + production) is owned by Vercel's Git integration:
+#   - main        -> Production
+#   - development -> Preview
+on:
+  pull_request:
+    branches: [main, development]
+  push:
+    branches: [main, development]
+
+# A new push to the same branch cancels the in-flight run for that branch.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege: CI only needs to read the repo.
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    name: Lint · Typecheck · Test · Audit · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # postinstall runs `prisma generate`, which only reads the schema —
+      # it does NOT connect to MongoDB, so no DATABASE_URL is needed here.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type-check
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Security audit (high and above)
+        run: pnpm audit --audit-level=high
+
+      # The build does NOT connect to a database. These throwaway values only
+      # satisfy the zod env validation in src/lib/env.ts (DATABASE_URL and
+      # JWT_SECRET are required with no defaults). Prisma connects lazily at
+      # runtime, never at build, and nothing queries the DB during build.
+      - name: Build
+        run: pnpm build
+        env:
+          DATABASE_URL: mongodb://ci:ci@localhost:27017/ci?authSource=admin
+          JWT_SECRET: ci-build-placeholder-secret-not-a-real-key-000
