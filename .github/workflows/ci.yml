@@ -1,19 +1,10 @@
 name: CI
 
-# Quality gate. This pipeline VALIDATES code — it does not deploy.
-# Deployment (preview + production) is owned by Vercel's Git integration:
-#   - main        -> Production
-#   - development -> Preview
+# Reusable quality gate. It VALIDATES code — it never deploys.
+# Invoked by cd.yml on every PR and every push to main/development, and the
+# deploy job there only runs if this gate passes (true CI -> CD gating).
 on:
-  pull_request:
-    branches: [main, development]
-  push:
-    branches: [main, development]
-
-# A new push to the same branch cancels the in-flight run for that branch.
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_call:
 
 # Least privilege: CI only needs to read the repo.
 permissions:

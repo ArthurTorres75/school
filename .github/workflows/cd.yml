@@ -1,0 +1,69 @@
+name: CD
+
+# Deployment pipeline. Runs the reusable quality gate first, then deploys to
+# Vercel only if the gate passes:
+#   - push to main        -> Production
+#   - push to development  -> Preview (staging)
+#   - pull request         -> Preview (ephemeral, one URL per PR)
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+# A new push to the same ref cancels the in-flight deploy for that ref.
+concurrency:
+  group: cd-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Gate: reuses .github/workflows/ci.yml (lint, typecheck, test, audit, build).
+  quality-gate:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Deploy to Vercel
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The Vercel CLI reads these from the environment to identify the project.
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      # main -> production deploy; everything else (development, PRs) -> preview.
+      - name: Resolve target environment
+        id: target
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "environment=production" >> "$GITHUB_OUTPUT"
+            echo "prod_flag=--prod" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=preview" >> "$GITHUB_OUTPUT"
+            echo "prod_flag=" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Pulls the project settings AND env vars for this environment FROM Vercel.
+      # This is why app secrets live in Vercel, not in GitHub.
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=${{ steps.target.outputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build project artifacts
+        run: vercel build ${{ steps.target.outputs.prod_flag }} --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel
+        run: vercel deploy --prebuilt ${{ steps.target.outputs.prod_flag }} --token=${{ secrets.VERCEL_TOKEN }}
