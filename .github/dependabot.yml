@@ -1,0 +1,34 @@
+version: 2
+updates:
+  # JavaScript/TypeScript dependencies. The "npm" ecosystem also covers pnpm.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      # Bundle the boring stuff: minor + patch version updates into ONE weekly PR.
+      # Major updates deliberately fall outside this group, so they arrive as
+      # individual PRs that get manual review (a major can break the build).
+      routine-minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "*"
+    # Security (CVE-driven) updates are intentionally NOT grouped. Each lands in
+    # its own PR so a critical fix can be merged fast, never held hostage by an
+    # unrelated bump that fails CI.
+
+  # Keep the GitHub Actions used in ci.yml / cd.yml up to date
+  # (actions/checkout, actions/setup-node, pnpm/action-setup, etc.).
+  # Low risk, so bundle them all into a single weekly PR.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
