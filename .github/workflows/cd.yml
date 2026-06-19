@@ -34,8 +34,13 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
+      # On pull_request, checkout defaults to an ephemeral merge commit. We pin
+      # the PR branch's real HEAD so the deployed code and the git metadata below
+      # reference the actual commit, not "Merge X into Y".
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       # `vercel build` shells out to pnpm to install deps, so pnpm must be on
       # PATH in this job (it does not inherit it from the quality-gate job).
@@ -81,5 +86,26 @@ jobs:
           JWT_SECRET: ci-build-placeholder-secret-not-a-real-key-000
         run: vercel build ${{ steps.target.outputs.prod_flag }} --token=${{ secrets.VERCEL_TOKEN }}
 
+      # CLI deploys have no Git context on their own, so we attach it explicitly.
+      # These github* meta keys make Vercel show the branch, commit, author and a
+      # link in the dashboard instead of the raw merge commit.
       - name: Deploy to Vercel
-        run: vercel deploy --prebuilt ${{ steps.target.outputs.prod_flag }} --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            REF="${{ github.event.pull_request.head.ref }}"
+            SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            REF="${{ github.ref_name }}"
+            SHA="${{ github.sha }}"
+          fi
+          MSG="$(git log -1 --pretty=%s)"
+          AUTHOR="$(git log -1 --pretty=%an)"
+          vercel deploy --prebuilt ${{ steps.target.outputs.prod_flag }} \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --meta githubCommitRef="$REF" \
+            --meta githubCommitSha="$SHA" \
+            --meta githubCommitMessage="$MSG" \
+            --meta githubCommitAuthorName="$AUTHOR" \
+            --meta githubOrg="${{ github.repository_owner }}" \
+            --meta githubRepo="${{ github.event.repository.name }}" \
+            --meta githubDeployment=1
