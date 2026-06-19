@@ -19,9 +19,6 @@
     "prisma:deploy": "prisma db push --skip-generate",
     "prisma:seed": "prisma db seed"
   },
-  "prisma": {
-    "seed": "node prisma/seed.cjs"
-  },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@hugeicons/core-free-icons": "^4.1.1",
@@ -53,6 +50,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "^2.1.9",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "^16",
     "postcss": "^8",
