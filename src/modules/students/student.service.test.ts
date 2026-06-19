@@ -18,6 +18,7 @@ function createRepositoryMock(): StudentRepository {
     getParentChildGrades: vi.fn(),
     getAdminStudentGrades: vi.fn(),
     findParentProfileByUserId: vi.fn(),
+    hasParentStudentLink: vi.fn(),
     hasInscriptionForStudent: vi.fn(),
     hasCedulaNumber: vi.fn(),
     findInvalidCourseIds: vi.fn(),
