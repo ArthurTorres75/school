@@ -1,3 +1,10 @@
+# Force the patched `effect` version. It is a transitive dep of @prisma/config
+# (the prisma.config.ts loader) and only ships in the Prisma toolchain.
+# Advisory GHSA-38f7-945m-qr2g (concurrent-RPC fiber context) does not apply to
+# Prisma's build-time config usage, but we upgrade to stay clean.
+overrides:
+  'effect@<3.20.0': '>=3.20.0'
+
 allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true
