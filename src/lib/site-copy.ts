@@ -68,6 +68,32 @@ interface PublicPageCopy {
   detail: string;
 }
 
+interface PublicCardCopy {
+  tag: string;
+  title: string;
+  description: string;
+}
+
+interface CoursesPageCopy extends PublicPageCopy {
+  programsEyebrow: string;
+  programsTitle: string;
+  programsSubtitle: string;
+  programs: PublicCardCopy[];
+  ctaTitle: string;
+  ctaText: string;
+  ctaLabel: string;
+}
+
+export interface RichPublicPageCopy extends PublicPageCopy {
+  sectionEyebrow: string;
+  sectionTitle: string;
+  sectionSubtitle: string;
+  cards: PublicCardCopy[];
+  ctaTitle: string;
+  ctaText: string;
+  ctaLabel: string;
+}
+
 interface AdmissionsFormCopy {
   title: string;
   subtitle: string;
@@ -162,9 +188,9 @@ interface SiteCopy {
   publicNav: NavigationCopy;
   privateNav: PrivateNavigationCopy;
   landing: LandingPageCopy;
-  courses: PublicPageCopy;
-  news: PublicPageCopy;
-  contact: PublicPageCopy;
+  courses: CoursesPageCopy;
+  news: RichPublicPageCopy;
+  contact: RichPublicPageCopy;
   admissions: PublicPageCopy;
   admissionsForm: AdmissionsFormCopy;
   dashboard: DashboardPageCopy;
@@ -271,18 +297,87 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
       title: "Cursos y programas",
       subtitle: "Presentá niveles, propuestas y beneficios con foco comercial e institucional.",
       detail: "Este espacio sirve para mostrar la propuesta educativa, diferenciales y llamados a inscripción.",
+      programsEyebrow: "Niveles",
+      programsTitle: "Una propuesta para cada etapa",
+      programsSubtitle: "Acompañamos el recorrido académico completo, con foco en cada momento del desarrollo.",
+      programs: [
+        {
+          tag: "Inicial",
+          title: "Educación inicial",
+          description: "Primeros años con juego, exploración y bases socioemocionales sólidas.",
+        },
+        {
+          tag: "Primaria",
+          title: "Educación primaria",
+          description: "Lectoescritura, pensamiento lógico y hábitos de estudio en un entorno contenedor.",
+        },
+        {
+          tag: "Secundaria",
+          title: "Educación secundaria",
+          description: "Preparación académica integral con orientación para la siguiente etapa.",
+        },
+      ],
+      ctaTitle: "¿Lista tu familia para sumarse?",
+      ctaText: "Conocé el proceso de inscripción y asegurá el cupo para el próximo ciclo.",
+      ctaLabel: "Ir a inscripciones",
     },
     news: {
       eyebrow: "Novedades",
       title: "Noticias y comunicados",
       subtitle: "Publicá eventos, anuncios y novedades del colegio con una estructura lista para crecer.",
       detail: "Después podemos sumar listados, categorías, destacados y detalle de noticia.",
+      sectionEyebrow: "Categorías",
+      sectionTitle: "Lo que vas a encontrar acá",
+      sectionSubtitle: "Mantené a la comunidad al día con todo lo que pasa en el colegio.",
+      cards: [
+        {
+          tag: "Eventos",
+          title: "Eventos institucionales",
+          description: "Actos, jornadas y actividades abiertas a las familias.",
+        },
+        {
+          tag: "Comunicados",
+          title: "Comunicados oficiales",
+          description: "Información importante de administración y dirección.",
+        },
+        {
+          tag: "Vida escolar",
+          title: "Vida escolar",
+          description: "Logros, proyectos y el día a día de nuestros estudiantes.",
+        },
+      ],
+      ctaTitle: "¿No te querés perder nada?",
+      ctaText: "Escribinos y te mantenemos al tanto de las próximas novedades.",
+      ctaLabel: "Ir a contacto",
     },
     contact: {
       eyebrow: "Relación institucional",
       title: "Contacto",
       subtitle: "Canal claro para familias interesadas, consultas administrativas y derivación comercial.",
       detail: "Más adelante podemos sumar formulario, mapa, horarios y múltiples sedes.",
+      sectionEyebrow: "Canales",
+      sectionTitle: "¿Con quién querés hablar?",
+      sectionSubtitle: "Elegí el canal según tu consulta y te respondemos a la brevedad.",
+      cards: [
+        {
+          tag: "Admisiones",
+          title: "Sumate a la comunidad",
+          description: "Escribinos para iniciar el proceso de inscripción y conocer el colegio.",
+        },
+        {
+          tag: "Administración",
+          title: "Pagos y documentación",
+          description: "Consultas sobre cuotas, constancias y trámites administrativos.",
+        },
+        {
+          tag: "Visitas",
+          title: "Conocé el campus",
+          description: "Agendá un recorrido para vivir la experiencia en persona.",
+        },
+      ],
+      ctaTitle: "¿Listo para dar el primer paso?",
+      ctaText: "Iniciá la inscripción y asegurá el lugar de tu familia.",
+      ctaLabel: "Ir a inscripciones",
     },
     admissions: {
       eyebrow: "Conversión",
@@ -496,18 +591,87 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
       title: "Courses and programs",
       subtitle: "Present levels, educational offerings and benefits with institutional and marketing focus.",
       detail: "This space is meant to showcase the educational proposal, differentiators and admission CTAs.",
+      programsEyebrow: "Levels",
+      programsTitle: "A path for every stage",
+      programsSubtitle: "We support the full academic journey, focused on each stage of development.",
+      programs: [
+        {
+          tag: "Early years",
+          title: "Early childhood education",
+          description: "First years built on play, exploration and strong social-emotional foundations.",
+        },
+        {
+          tag: "Primary",
+          title: "Primary education",
+          description: "Literacy, logical thinking and study habits in a caring environment.",
+        },
+        {
+          tag: "Secondary",
+          title: "Secondary education",
+          description: "Comprehensive academic preparation with guidance for what comes next.",
+        },
+      ],
+      ctaTitle: "Ready to join your family?",
+      ctaText: "Learn about the admission process and secure a spot for the next term.",
+      ctaLabel: "Go to admissions",
     },
     news: {
       eyebrow: "Updates",
       title: "News and announcements",
       subtitle: "Publish events, announcements and school updates with a structure ready to scale.",
       detail: "Later we can add lists, categories, highlights and full news detail pages.",
+      sectionEyebrow: "Categories",
+      sectionTitle: "What you'll find here",
+      sectionSubtitle: "Keep the community up to date with everything happening at school.",
+      cards: [
+        {
+          tag: "Events",
+          title: "Institutional events",
+          description: "Ceremonies, open days and activities for families.",
+        },
+        {
+          tag: "Announcements",
+          title: "Official announcements",
+          description: "Important information from administration and leadership.",
+        },
+        {
+          tag: "School life",
+          title: "School life",
+          description: "Achievements, projects and our students' day to day.",
+        },
+      ],
+      ctaTitle: "Don't want to miss a thing?",
+      ctaText: "Reach out and we'll keep you posted on what's coming.",
+      ctaLabel: "Go to contact",
     },
     contact: {
       eyebrow: "Institutional relationship",
       title: "Contact",
       subtitle: "A clear channel for interested families, administrative questions and commercial routing.",
       detail: "Later we can add a form, map, schedule and multiple campus locations.",
+      sectionEyebrow: "Channels",
+      sectionTitle: "Who would you like to talk to?",
+      sectionSubtitle: "Pick the channel that fits your question and we'll reply shortly.",
+      cards: [
+        {
+          tag: "Admissions",
+          title: "Join the community",
+          description: "Reach out to start the enrollment process and get to know the school.",
+        },
+        {
+          tag: "Administration",
+          title: "Payments and paperwork",
+          description: "Questions about tuition, certificates and administrative procedures.",
+        },
+        {
+          tag: "Visits",
+          title: "Visit the campus",
+          description: "Schedule a tour to experience it in person.",
+        },
+      ],
+      ctaTitle: "Ready to take the first step?",
+      ctaText: "Start the enrollment and secure your family's spot.",
+      ctaLabel: "Go to admissions",
     },
     admissions: {
       eyebrow: "Conversion",
