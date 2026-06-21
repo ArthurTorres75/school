@@ -9,7 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TopControlsHeader } from "@/components/shared/TopControlsHeader";
+import { AuthShell } from "@/components/AuthShell";
 import { useLanguage } from "@/providers/LanguageProvider";
 import { UI_COPY } from "@/lib/ui-copy";
 import { getAuthSchemas, type LoginFormInput, type LoginInput, type RegisterUserFormInput, type RegisterUserInput } from "@/modules/users/user.schemas.i18n";
@@ -228,11 +228,13 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
 
   if (currentUser?.data) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-background via-secondary/30 to-accent/18 px-4 py-6 sm:px-6 sm:py-8">
-        <div className="w-full max-w-md space-y-6">
-          <TopControlsHeader brandLabel="School" />
-          
-          <div className="space-y-6 rounded-2xl border border-border bg-card p-8 shadow-lg shadow-black/5 animate-card-scale-in">
+      <AuthShell
+        brandLabel="School"
+        title={copy.brandPanelTitle}
+        subtitle={copy.brandPanelSubtitle}
+        features={copy.brandPanelFeatures}
+      >
+        <div className="space-y-6 rounded-2xl border border-border bg-card p-8 shadow-lg shadow-black/5 animate-card-scale-in">
             <div className="space-y-1">
               <h1 className="font-heading text-2xl font-semibold tracking-tight">Sesión activa</h1>
               <p className="text-sm text-muted-foreground">Estás autenticado como:</p>
@@ -301,16 +303,17 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
               </div>
             )}
           </div>
-        </div>
-      </div>
+      </AuthShell>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-background via-secondary/30 to-accent/18 px-4 py-6 sm:px-6 sm:py-8">
-      <div className="w-full max-w-md space-y-6">
-        <TopControlsHeader brandLabel="School" />
-
+    <AuthShell
+      brandLabel="School"
+      title={copy.brandPanelTitle}
+      subtitle={copy.brandPanelSubtitle}
+      features={copy.brandPanelFeatures}
+    >
         <div className="space-y-6 rounded-2xl border border-border bg-card p-8 shadow-lg shadow-black/5 animate-card-scale-in">
           {/* Header */}
           <div className="space-y-1">
@@ -558,7 +561,6 @@ export function AuthPage({ initialMode = "login" }: AuthPageProps) {
             {mode === "login" ? copy.switchToRegister : copy.switchToLogin}
           </Button>
         </div>
-      </div>
-    </div>
+    </AuthShell>
   );
 }

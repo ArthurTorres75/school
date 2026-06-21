@@ -44,6 +44,9 @@ interface AuthCopy {
   loginError: string;
   registerError: string;
   unknownError: string;
+  brandPanelTitle: string;
+  brandPanelSubtitle: string;
+  brandPanelFeatures: string[];
 }
 
 interface LandingCopy {
@@ -120,6 +123,14 @@ export const UI_COPY: Record<Language, UiCopy> = {
       loginError: "No se pudo iniciar sesión.",
       registerError: "No se pudo registrar la cuenta.",
       unknownError: "Error desconocido.",
+      brandPanelTitle: "Gestioná tu colegio sin fricción",
+      brandPanelSubtitle:
+        "Una sola plataforma para familias, docentes y administración: captación, inscripciones y seguimiento académico en un mismo lugar.",
+      brandPanelFeatures: [
+        "Inscripciones y captación de familias",
+        "Seguimiento académico en tiempo real",
+        "Acceso por rol para todo el equipo",
+      ],
     },
     landing: {
       badge: "School SaaS",
@@ -188,6 +199,14 @@ export const UI_COPY: Record<Language, UiCopy> = {
       loginError: "Could not sign in.",
       registerError: "Could not create account.",
       unknownError: "Unknown error.",
+      brandPanelTitle: "Run your school without friction",
+      brandPanelSubtitle:
+        "One platform for families, teachers and administration: acquisition, enrollment and academic tracking in a single place.",
+      brandPanelFeatures: [
+        "Enrollment and family acquisition",
+        "Real-time academic tracking",
+        "Role-based access for the whole team",
+      ],
     },
     landing: {
       badge: "School SaaS",
