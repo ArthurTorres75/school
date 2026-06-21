@@ -150,6 +150,8 @@ interface DashboardPageCopy extends PrivatePageCopy {
   kpiEnrollmentLabel: string;
   kpiModulesLabel: string;
   kpiRoleLabel: string;
+  enrollmentEnabledLabel: string;
+  enrollmentRestrictedLabel: string;
   roleNameAdmin: string;
   roleNameParent: string;
   roleNameTeacher: string;
@@ -435,6 +437,8 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
       kpiEnrollmentLabel: "Inscripción",
       kpiModulesLabel: "Módulos visibles",
       kpiRoleLabel: "Perfil activo",
+      enrollmentEnabledLabel: "Habilitada",
+      enrollmentRestrictedLabel: "Restringida",
       roleNameAdmin: "Administrador",
       roleNameParent: "Representante",
       roleNameTeacher: "Docente",
@@ -729,6 +733,8 @@ export const SITE_COPY: Record<Language, SiteCopy> = {
       kpiEnrollmentLabel: "Enrollment",
       kpiModulesLabel: "Visible modules",
       kpiRoleLabel: "Active profile",
+      enrollmentEnabledLabel: "Enabled",
+      enrollmentRestrictedLabel: "Restricted",
       roleNameAdmin: "Administrator",
       roleNameParent: "Guardian",
       roleNameTeacher: "Teacher",
