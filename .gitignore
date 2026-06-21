@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# private specs
+/docs/
+
 # local AI rules and skills
 .atl/
 .agent/
