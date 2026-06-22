@@ -5,13 +5,21 @@ import Link from "next/link";
 import { PublicCardGrid } from "@/components/sections/PublicCardGrid";
 import { PublicPageIntro } from "@/components/sections/PublicPageIntro";
 import { Button } from "@/components/ui/button";
-import { SITE_COPY } from "@/lib/site-copy";
-import { useLanguage } from "@/providers/LanguageProvider";
+import type { RichPublicPageCopy } from "@/lib/site-copy";
 
-export function CoursesPageContent() {
-  const { language } = useLanguage();
-  const copy = SITE_COPY[language].courses;
+interface RichPublicPageProps {
+  copy: RichPublicPageCopy;
+  /** Where the closing call-to-action links to (e.g. "/inscripciones"). */
+  ctaHref: string;
+  tone?: "primary" | "secondary" | "accent";
+}
 
+/**
+ * Composes a public subpage from shared building blocks: on-brand hero, a card
+ * grid section, and a closing gradient CTA. Keeps news/contact (and any future
+ * public page) consistent and driven entirely by localized copy.
+ */
+export function RichPublicPage({ copy, ctaHref, tone = "primary" }: RichPublicPageProps) {
   return (
     <div className="space-y-8">
       <PublicPageIntro
@@ -19,14 +27,14 @@ export function CoursesPageContent() {
         title={copy.title}
         subtitle={copy.subtitle}
         detail={copy.detail}
-        tone="primary"
+        tone={tone}
       />
 
       <PublicCardGrid
-        eyebrow={copy.programsEyebrow}
-        title={copy.programsTitle}
-        subtitle={copy.programsSubtitle}
-        cards={copy.programs}
+        eyebrow={copy.sectionEyebrow}
+        title={copy.sectionTitle}
+        subtitle={copy.sectionSubtitle}
+        cards={copy.cards}
       />
 
       <section className="landing-panel relative overflow-hidden rounded-2xl border border-border/90 bg-card/95 p-7 sm:p-9">
@@ -39,7 +47,7 @@ export function CoursesPageContent() {
             <p className="max-w-xl text-sm leading-6 text-muted-foreground">{copy.ctaText}</p>
           </div>
           <Button asChild size="lg" className="shrink-0">
-            <Link href="/inscripciones">{copy.ctaLabel}</Link>
+            <Link href={ctaHref}>{copy.ctaLabel}</Link>
           </Button>
         </div>
       </section>
