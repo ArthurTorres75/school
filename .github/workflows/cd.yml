@@ -38,19 +38,19 @@ jobs:
       # the PR branch's real HEAD so the deployed code and the git metadata below
       # reference the actual commit, not "Merge X into Y".
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       # `vercel build` shells out to pnpm to install deps, so pnpm must be on
       # PATH in this job (it does not inherit it from the quality-gate job).
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 11
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
